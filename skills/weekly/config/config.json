@@ -1,0 +1,9 @@
+{
+  "senders": [],
+  "keyword": "周报",
+  "folder": "inbox",
+  "limit": 100,
+  "date_range": "current_week",
+  "output_dir": "weekly/output",
+  "language": "zh"
+}

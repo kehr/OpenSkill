@@ -1,0 +1,54 @@
+{
+  "name": "@kehr/openskill",
+  "version": "0.1.0",
+  "description": "AI coding assistant skill development framework and distribution tool",
+  "type": "module",
+  "bin": {
+    "openskill": "./dist/cli/cli/index.js"
+  },
+  "files": [
+    "dist/",
+    "scaffolds/",
+    "platforms/"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli/index.ts",
+    "build:cli": "tsc",
+    "build:skills": "tsx src/cli/index.ts build",
+    "build": "npm run build:cli && npm run build:skills",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "lint": "tsx src/cli/index.ts lint",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "ai",
+    "skill",
+    "claude",
+    "cli"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "commander": "^14.0.3",
+    "glob": "^13.0.6",
+    "gray-matter": "^4.0.3",
+    "handlebars": "^4.7.8",
+    "minimatch": "^10.2.4",
+    "ora": "^9.3.0",
+    "picocolors": "^1.1.1",
+    "semver": "^7.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/semver": "^7.7.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}

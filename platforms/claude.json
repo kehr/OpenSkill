@@ -1,0 +1,7 @@
+{
+  "name": "claude",
+  "configDir": ".claude",
+  "skillsDir": "skills",
+  "agentsDir": "agents",
+  "homeBase": "~"
+}
