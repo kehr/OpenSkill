@@ -15,6 +15,7 @@ Fetch team emails from Outlook, summarize, aggregate with risk analysis, and gen
 | **summarize** | Fetch and summarize team weekly reports |
 | **aggregate** | Merge summaries into team overview with risk analysis |
 | **generate** | Create your personal weekly report (requires style profile) |
+| **read** | Smart reading: reorganize reports by topic (dimension -> topic -> person) |
 | **learn-style** | Teach me your writing style from samples |
 | **configure** | Set up senders, keywords, and preferences |
 | **help** | Show usage guide, current status, and available commands |
@@ -62,8 +63,8 @@ On every invocation:
 5. **Language**: respect `language` config. `"zh"` = Chinese output + filenames, `"en"` = English, `"auto"` = match input.
 
 6. **Action routing**: if user intent unclear, use `AskUserQuestion` in user's language:
-   - zh: "你想做什么？" -> 总结本周周报 | 汇总团队报告 | 生成我的周报 | 配置设置 | 使用帮助
-   - en: "What would you like to do?" -> Summarize | Aggregate | Generate | Configure | Help
+   - zh: "你想做什么？" -> 总结本周周报 | 汇总团队报告 | 生成我的周报 | 智能阅读 | 配置设置 | 使用帮助
+   - en: "What would you like to do?" -> Summarize | Aggregate | Generate | Smart Read | Configure | Help
 
 ## Data Source Routing
 
@@ -181,6 +182,16 @@ On first configure (or when `{data-dir}/config/` is empty), initialize with:
     history/            # Created by first pipeline run
 ```
 
+## Function: read
+
+1. Check if `{output-dir}/YYYY-WNN/individuals/` exists for target week. If not, auto-trigger summarize first.
+2. Read `{data-dir}/config/openskill.md` for fixed dimensions and risk rules
+3. Parse user message for runtime dimension filters (add/filter/focus)
+4. Follow [specs/read-requirements.md](specs/read-requirements.md) for processing rules
+5. Use [templates/smart-read.md](templates/smart-read.md) format
+6. Reference [examples/smart-read-example.md](examples/smart-read-example.md) for quality
+7. Display in chat + write to `{output-dir}/YYYY-WNN/` (language-appropriate name: `智能阅读.md` or `smart-read.md`)
+
 ## Function: help
 
 Trigger: user says "help", "how to use", "what can you do", or intent is unclear on first use.
@@ -218,10 +229,13 @@ All memory operations MUST follow [specs/memory-requirements.md](specs/memory-re
 | Spec | [specs/generate-requirements.md](specs/generate-requirements.md) | Generate processing rules |
 | Spec | [specs/learn-style-requirements.md](specs/learn-style-requirements.md) | Style learning rules |
 | Spec | [specs/memory-requirements.md](specs/memory-requirements.md) | Memory structure and update rules |
+| Spec | [specs/read-requirements.md](specs/read-requirements.md) | Smart read processing rules |
 | Template | [templates/individual-summary.md](templates/individual-summary.md) | Per-person summary format |
 | Template | [templates/team-aggregate.md](templates/team-aggregate.md) | Team aggregate format |
 | Template | [templates/personal-report.md](templates/personal-report.md) | Personal report format |
+| Template | [templates/smart-read.md](templates/smart-read.md) | Smart read output format |
 | Example | [examples/individual-summary-example.md](examples/individual-summary-example.md) | Summary quality reference |
 | Example | [examples/team-aggregate-example.md](examples/team-aggregate-example.md) | Aggregate quality reference |
 | Example | [examples/personal-report-example.md](examples/personal-report-example.md) | Personal report quality reference |
+| Example | [examples/smart-read-example.md](examples/smart-read-example.md) | Smart read quality reference |
 | Reference | [references/help.md](references/help.md) | Help function display logic |
