@@ -38,11 +38,10 @@ On every invocation, MUST use `TodoWrite` to create a task list for the executio
 
 Example for summarize:
 ```
-1. [pending] Fetch emails from Outlook
-2. [pending] Summarize individual reports (24 people, 5 batches)
+1. [pending] Fetch emails from Outlook + save raw JSON
+2. [pending] Summarize individual reports (parallel)
 3. [pending] Verify all summaries (AGV-V)
-4. [pending] Merge into combined file
-5. [pending] Update memory
+4. [pending] Update memory
 ```
 
 ## Initialization
@@ -80,7 +79,9 @@ Skip if source is already clear from context (e.g., "summarize this week's email
 
 | Content | zh | en |
 |---------|----|----|
-| Individual summaries | `个人总结.md` | `individual-summaries.md` |
+| Raw emails | `raw/emails.json` | `raw/emails.json` |
+| Individual summaries | `individuals/{email_prefix}.md` | `individuals/{email_prefix}.md` |
+| Smart read | `智能阅读.md` | `smart-read.md` |
 | Team aggregate | `团队汇总.md` | `team-aggregate.md` |
 | Personal report | `我的周报.md` | `my-report.md` |
 
@@ -107,7 +108,7 @@ Phase 3 (sequential): [Generate personal report]
 1. Determine data source (see Data Source Routing)
 2. Resolve date range via `AskUserQuestion`: "This week" | "Last week" | "Custom"
 3. Read `{data-dir}/memory/team-context.md` for context (if exists)
-4. Fetch emails:
+4. Fetch emails and **save raw data** to `{output-dir}/YYYY-WNN/raw/emails.json`:
    ```bash
    python3 {skill-dir}/scripts/fetch-outlook-emails.py \
      --senders "..." --keyword "..." --folder "..." --start-date ... --end-date ... --limit ...
@@ -118,9 +119,8 @@ Phase 3 (sequential): [Generate personal report]
    - Follows [templates/individual-summary.md](templates/individual-summary.md) format
    - References [examples/individual-summary-example.md](examples/individual-summary-example.md) for quality
    - Writes to `{output-dir}/YYYY-WNN/individuals/{email_prefix}.md`
-7. Merge all summaries into one file (language-appropriate name)
-8. Update `{data-dir}/memory/team-context.md`
-9. Present to user for review
+7. Update `{data-dir}/memory/team-context.md`
+8. Present to user for review
 
 ## Function: aggregate
 

@@ -37,8 +37,8 @@ Follow the template at [templates/individual-summary.md](../templates/individual
 
 When writing output:
 - If the output directory already exists, ask the user (via AskUserQuestion): "Overwrite" | "Create new (timestamped)" | "Cancel"
+- Save raw email JSON to `{output-dir}/YYYY-WNN/raw/emails.json` (preserves original data for drill-down)
 - Write each person's summary to `{output-dir}/YYYY-WNN/individuals/{email_prefix}.md` where `{email_prefix}` is the part before `@` in the sender's email address (e.g., `alice@company.com` -> `alice.md`)
-- Merge all individual summaries into a combined file at `{output-dir}/YYYY-WNN/{combined-filename}` using the language-appropriate name (e.g., `个人总结.md` or `individual-summaries.md`)
 
 ## Subagent Execution
 
@@ -85,7 +85,7 @@ After generating each individual summary, verify:
 - [ ] Non-weekly-report emails were excluded and noted
 
 After all summaries complete (final verification):
-- [ ] All expected senders have a summary (or exclusion noted)
-- [ ] Combined file written with correct language-appropriate filename
-- [ ] No duplicate senders in the combined output
+- [ ] raw/emails.json saved with original email data
+- [ ] All expected senders have a summary in individuals/ (or exclusion noted)
+- [ ] No duplicate senders
 - [ ] Memory files updated (team-context.md)
