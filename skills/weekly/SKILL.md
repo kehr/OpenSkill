@@ -105,6 +105,7 @@ Phase 3 (sequential): [Generate personal report]
 
 ## Function: summarize
 
+**A (Analysis):**
 1. Determine data source (see Data Source Routing)
 2. Resolve date range via `AskUserQuestion`: "This week" | "Last week" | "Custom"
 3. Read `{data-dir}/memory/team-context.md` for context (if exists)
@@ -114,51 +115,81 @@ Phase 3 (sequential): [Generate personal report]
      --senders "..." --keyword "..." --folder "..." --start-date ... --end-date ... --limit ...
    ```
 5. Group emails by sender, deduplicate (keep most recent per sender)
-6. **Parallel dispatch**: launch one Agent per person (batch 3-5 if >10 people). Each agent:
-   - Reads [specs/summarize-requirements.md](specs/summarize-requirements.md) for rules
-   - Follows [templates/individual-summary.md](templates/individual-summary.md) format
-   - References [examples/individual-summary-example.md](examples/individual-summary-example.md) for quality
-   - Writes to `{output-dir}/YYYY-WNN/individuals/{email_prefix}.md`
-7. Update `{data-dir}/memory/team-context.md`
-8. Present to user for review
+
+**G (Generate):** STE = [specs/summarize-requirements.md](specs/summarize-requirements.md) + [templates/individual-summary.md](templates/individual-summary.md) + [examples/individual-summary-example.md](examples/individual-summary-example.md)
+6. **Parallel dispatch**: launch one Agent per person (batch 3-5 if >10 people). Each agent follows the STE above.
+7. Each agent writes to `{output-dir}/YYYY-WNN/individuals/{email_prefix}.md`
+
+**V (Verify):** run Verification Checklist from specs/summarize-requirements.md
+8. Verify all individuals/ files: sections present, word count, metrics preserved, no data loss
+9. Update `{data-dir}/memory/team-context.md`
+10. Present verification summary + results to user
 
 ## Function: aggregate
 
+**A (Analysis):**
 1. Read individual summaries from most recent output (or user-specified path)
-2. Read [config/openskill.md](config/openskill.md) for analysis preferences
+2. Read [config/openskill.md](config/openskill.md) for risk rules and focus areas
 3. Read `{data-dir}/memory/history/` for cross-week analysis
-4. Follow [specs/aggregate-requirements.md](specs/aggregate-requirements.md) for processing rules
-5. Use [templates/team-aggregate.md](templates/team-aggregate.md) format
-6. Reference [examples/team-aggregate-example.md](examples/team-aggregate-example.md) for quality
-7. Write to `{output-dir}/YYYY-WNN/` (language-appropriate name)
-8. Present to user for review
+
+**G (Generate):** STE = [specs/aggregate-requirements.md](specs/aggregate-requirements.md) + [templates/team-aggregate.md](templates/team-aggregate.md) + [examples/team-aggregate-example.md](examples/team-aggregate-example.md)
+4. Generate team aggregate following STE
+5. Write to `{output-dir}/YYYY-WNN/` (language-appropriate name)
+
+**V (Verify):** run Verification Checklist from specs/aggregate-requirements.md
+6. Verify: 7 sections present, risk items have severity + action, statistics match content
+7. Present verification summary + results to user
 
 ## Function: generate
 
+**A (Analysis):**
 1. Check `{data-dir}/memory/profile/` exists. If not, `AskUserQuestion`: "Learn my style now" | "Use default template" | "Cancel"
 2. Read team aggregate report
-3. If personal STE exists, use it as the generation STE:
-   - S: `{data-dir}/memory/profile/spec.md`
-   - T: `{data-dir}/memory/profile/template.md`
-   - E: `{data-dir}/memory/profile/example.md`
-4. If no personal STE, fall back to defaults:
-   - S: [specs/generate-requirements.md](specs/generate-requirements.md)
-   - T: [templates/personal-report.md](templates/personal-report.md)
-   - E: [examples/personal-report-example.md](examples/personal-report-example.md)
-5. Follow [specs/generate-requirements.md](specs/generate-requirements.md) for processing rules
-6. Present draft. `AskUserQuestion`: "Approve and save" | "Edit" | "Regenerate"
+3. Resolve STE:
+   - If personal STE exists: S=`profile/spec.md`, T=`profile/template.md`, E=`profile/example.md`
+   - If not: S=[specs/generate-requirements.md](specs/generate-requirements.md), T=[templates/personal-report.md](templates/personal-report.md), E=[examples/personal-report-example.md](examples/personal-report-example.md)
+
+**G (Generate):** STE = resolved above
+4. Generate personal report following STE
+5. Present draft. `AskUserQuestion`: "Approve and save" | "Edit" | "Regenerate"
+
+**V (Verify):** run Verification Checklist from specs/generate-requirements.md
+6. Verify: style matches profile, data traces to aggregate, no fabrication
 7. Write to `{output-dir}/YYYY-WNN/` (language-appropriate name)
 8. Update `{data-dir}/memory/history/YYYY-WNN.md`
+9. Present verification summary
+
+## Function: read
+
+**A (Analysis):**
+1. Check if `{output-dir}/YYYY-WNN/individuals/` exists. If not, auto-trigger summarize first.
+2. Read `{data-dir}/config/openskill.md` for fixed dimensions and risk rules
+3. Parse user message for runtime dimension filters (add/filter/focus)
+4. Decompose all individual summaries into content items, discover emergent dimensions
+
+**G (Generate):** STE = [specs/read-requirements.md](specs/read-requirements.md) + [templates/smart-read.md](templates/smart-read.md) + [examples/smart-read-example.md](examples/smart-read-example.md)
+5. Classify items into dimensions, cluster into topics, generate three-layer output
+6. Display in chat + write to `{output-dir}/YYYY-WNN/` (`智能阅读.md` or `smart-read.md`)
+
+**V (Verify):** run Verification Checklist from specs/read-requirements.md
+7. Verify: no data loss, risk severity justified, statistics match, emergent dimensions valid
+8. Present verification summary
 
 ## Function: learn-style
 
+**A (Analysis):**
 1. `AskUserQuestion`: "Screenshots" | "File paths" | "Paste text" | "Outlook sender search"
-2. Follow [specs/learn-style-requirements.md](specs/learn-style-requirements.md) for analysis rules
+2. Collect and read all user samples
+
+**G (Generate):** STE = [specs/learn-style-requirements.md](specs/learn-style-requirements.md) (output is the profile STE itself)
 3. Analyze samples, produce personal STE triad:
    - `{data-dir}/memory/profile/spec.md` -- writing rules
    - `{data-dir}/memory/profile/template.md` -- report structure
    - `{data-dir}/memory/profile/example.md` -- quality benchmark
-4. Present to user. `AskUserQuestion`: "Yes, save it" | "Adjust" | "Redo"
+
+**V (Verify):** run Verification Checklist from specs/learn-style-requirements.md
+4. Verify: 6 dimensions present, patterns from actual samples, template matches user structure
+5. Present to user. `AskUserQuestion`: "Yes, save it" | "Adjust" | "Redo"
 
 ## Function: configure
 
@@ -181,16 +212,6 @@ On first configure (or when `{data-dir}/config/` is empty), initialize with:
     team-context.md     # Created by first summarize
     history/            # Created by first pipeline run
 ```
-
-## Function: read
-
-1. Check if `{output-dir}/YYYY-WNN/individuals/` exists for target week. If not, auto-trigger summarize first.
-2. Read `{data-dir}/config/openskill.md` for fixed dimensions and risk rules
-3. Parse user message for runtime dimension filters (add/filter/focus)
-4. Follow [specs/read-requirements.md](specs/read-requirements.md) for processing rules
-5. Use [templates/smart-read.md](templates/smart-read.md) format
-6. Reference [examples/smart-read-example.md](examples/smart-read-example.md) for quality
-7. Display in chat + write to `{output-dir}/YYYY-WNN/` (language-appropriate name: `智能阅读.md` or `smart-read.md`)
 
 ## Function: help
 
