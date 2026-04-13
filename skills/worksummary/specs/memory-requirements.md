@@ -34,7 +34,7 @@ New information arrives
 ## Runtime Directory Structure
 
 ```
-{data-dir}/                              # .openskill/weekly/ or ~/.openskill/weekly/
+{data-dir}/                              # .openskill/worksummary/ or ~/.openskill/worksummary/
   config/
     config.json                          # User config (initialized from built-in defaults)
     openskill.md                         # User directives -- highest priority, overrides all behavior
@@ -52,8 +52,8 @@ New information arrives
 ### Initialization
 
 On first run (or when `{data-dir}/config/` is empty), copy built-in defaults:
-- `config/config.json` from `skills/weekly/config/config.json`
-- `config/openskill.md` from `skills/weekly/config/openskill.md`
+- `config/config.json` from `skills/worksummary/config/config.json`
+- `config/openskill.md` from `skills/worksummary/config/openskill.md`
 
 ### openskill.md
 

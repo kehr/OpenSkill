@@ -1,4 +1,4 @@
-# Team Weekly Aggregate - [Date Range]
+# Team Work Summary - [Date Range]
 
 ## Team Overview
 [2-3 sentence executive summary: how many reports processed, overall team status]

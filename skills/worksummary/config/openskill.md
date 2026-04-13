@@ -1,6 +1,6 @@
 # OpenSkill Directives
 
-> This file is the highest-priority configuration for the weekly skill.
+> This file is the highest-priority configuration for the worksummary skill.
 > All directives here override built-in behavior. Edit freely.
 > Similar to how CLAUDE.md configures Claude Code, this file configures skill execution.
 

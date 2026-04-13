@@ -60,7 +60,7 @@ scaffolds/
   agent/
     agent.md.hbs
 skills/
-  weekly-report/
+  worksummary/
     SKILL.md
     skill.json
     specs/requirements.md
@@ -116,7 +116,7 @@ Task 2: types.ts
         └── Task 16: dev command
 
 Task 17: Platform config files
-Task 18: weekly-report skill content
+Task 18: worksummary skill content
 Task 19: Integration test + final verification
 ```
 
@@ -217,8 +217,8 @@ mkdir -p tests/platforms tests/build tests/lint tests/cli/utils tests/cli/comman
 mkdir -p platforms scaffolds/skill/specs scaffolds/skill/templates
 mkdir -p scaffolds/skill/examples
 mkdir -p scaffolds/agent
-mkdir -p skills/weekly-report/specs skills/weekly-report/templates
-mkdir -p skills/weekly-report/examples
+mkdir -p skills/worksummary/specs skills/worksummary/templates
+mkdir -p skills/worksummary/examples
 mkdir -p agents
 ```
 
@@ -860,21 +860,21 @@ const claude: PlatformConfig = {
 describe('paths', () => {
   describe('resolveInstallDir', () => {
     it('resolves user-level skill path', () => {
-      const result = resolveInstallDir(claude, 'weekly-report', false);
-      expect(result.skills).toContain('.claude/skills/openskill/weekly-report');
+      const result = resolveInstallDir(claude, 'worksummary', false);
+      expect(result.skills).toContain('.claude/skills/openskill/worksummary');
       expect(result.agents).toContain('.claude/agents/openskill');
       expect(result.manifest).toContain('.claude/skills/openskill/.manifest.json');
     });
 
     it('resolves project-level skill path with --local', () => {
-      const result = resolveInstallDir(claude, 'weekly-report', true);
-      expect(result.skills).toMatch(/^\.claude\/skills\/openskill\/weekly-report$/);
+      const result = resolveInstallDir(claude, 'worksummary', true);
+      expect(result.skills).toMatch(/^\.claude\/skills\/openskill\/worksummary$/);
     });
   });
 
   describe('validateSkillName', () => {
     it('accepts valid names', () => {
-      expect(validateSkillName('weekly-report')).toBe(true);
+      expect(validateSkillName('worksummary')).toBe(true);
       expect(validateSkillName('code-review-2')).toBe(true);
     });
 
@@ -1008,19 +1008,19 @@ describe('manifest', () => {
   it('adds skill with agent references', () => {
     let m = addSkillToManifest(
       { version: '1.0.0', platform: 'claude', installedAt: '', skills: {}, agents: {} },
-      'weekly-report', '1.0.0', ['report-agent']
+      'worksummary', '1.0.0', ['report-agent']
     );
-    expect(m.skills['weekly-report'].agents).toEqual(['report-agent']);
-    expect(m.agents['report-agent'].referencedBy).toEqual(['weekly-report']);
+    expect(m.skills['worksummary'].agents).toEqual(['report-agent']);
+    expect(m.agents['report-agent'].referencedBy).toEqual(['worksummary']);
   });
 
   it('removes skill and cleans unreferenced agents', () => {
     let m = addSkillToManifest(
       { version: '1.0.0', platform: 'claude', installedAt: '', skills: {}, agents: {} },
-      'weekly-report', '1.0.0', ['report-agent']
+      'worksummary', '1.0.0', ['report-agent']
     );
-    m = removeSkillFromManifest(m, 'weekly-report');
-    expect(m.skills['weekly-report']).toBeUndefined();
+    m = removeSkillFromManifest(m, 'worksummary');
+    expect(m.skills['worksummary']).toBeUndefined();
     expect(m.agents['report-agent']).toBeUndefined();
   });
 
@@ -2556,20 +2556,20 @@ git commit -m "feat: add claude and joycode platform configs"
 ## Task 18: Weekly Report Skill Content
 
 **Files:**
-- Create: `skills/weekly-report/SKILL.md`
-- Create: `skills/weekly-report/skill.json`
-- Create: `skills/weekly-report/specs/requirements.md`
-- Create: `skills/weekly-report/templates/output.md`
-- Create: `skills/weekly-report/examples/good-example.md`
-- Create: `skills/weekly-report/examples/bad-example.md`
+- Create: `skills/worksummary/SKILL.md`
+- Create: `skills/worksummary/skill.json`
+- Create: `skills/worksummary/specs/requirements.md`
+- Create: `skills/worksummary/templates/output.md`
+- Create: `skills/worksummary/examples/good-example.md`
+- Create: `skills/worksummary/examples/bad-example.md`
 
 - [ ] **Step 1: Create skill.json**
 
 ```json
 {
-  "name": "weekly-report",
+  "name": "worksummary",
   "version": "1.0.0",
-  "description": "Generate manager weekly reports",
+  "description": "Work Summary automation for managers",
   "type": "skill",
   "platforms": ["claude", "joycode"],
   "render": ["SKILL.md", "specs/*.md"],
@@ -2579,9 +2579,9 @@ git commit -m "feat: add claude and joycode platform configs"
 
 - [ ] **Step 2: Create SKILL.md**
 
-The weekly-report skill content should follow the existing weekly-report skill already defined in the project (this is the first built-in skill). Create SKILL.md with proper frontmatter and content referencing STE files. The content should align with the existing `weekly-report` skill definition in the superpowers skills if available, or be authored fresh.
+The worksummary skill content should follow the existing worksummary skill already defined in the project (this is the first built-in skill). Create SKILL.md with proper frontmatter and content referencing STE files. The content should align with the existing `worksummary` skill definition in the superpowers skills if available, or be authored fresh.
 
-*Note: The actual weekly-report SKILL.md content is a separate authoring task. Create a minimal valid version here and iterate.*
+*Note: The actual worksummary SKILL.md content is a separate authoring task. Create a minimal valid version here and iterate.*
 
 - [ ] **Step 3: Create specs/requirements.md, templates/output.md, examples/**
 
@@ -2589,19 +2589,19 @@ Create minimal but valid content for each STE file to pass lint.
 
 - [ ] **Step 4: Verify lint passes**
 
-Run: `npx tsx src/cli/index.ts lint weekly-report`
+Run: `npx tsx src/cli/index.ts lint worksummary`
 Expected: 0 errors (warnings acceptable)
 
 - [ ] **Step 5: Verify full build works**
 
 Run: `npx tsx src/cli/index.ts build`
-Expected: Build complete with weekly-report built for both platforms
+Expected: Build complete with worksummary built for both platforms
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add skills/weekly-report/
-git commit -m "feat: add weekly-report skill (first built-in skill)"
+git add skills/worksummary/
+git commit -m "feat: add worksummary skill (first built-in skill)"
 ```
 
 
@@ -2622,7 +2622,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 describe('integration', () => {
-  it('builds weekly-report for all platforms', async () => {
+  it('builds worksummary for all platforms', async () => {
     const root = process.cwd();
     const distDir = join(tmpdir(), `openskill-integration-${Date.now()}`);
 
@@ -2639,7 +2639,7 @@ describe('integration', () => {
       for (const r of results) {
         expect(r.skillsCount).toBeGreaterThanOrEqual(1);
         const skillMd = await readFile(
-          join(distDir, r.platform, 'skills/openskill/weekly-report/SKILL.md'), 'utf-8'
+          join(distDir, r.platform, 'skills/openskill/worksummary/SKILL.md'), 'utf-8'
         );
         // Verify template vars were rendered (no {{configDir}} remaining)
         expect(skillMd).not.toContain('{{configDir}}');
@@ -2649,10 +2649,10 @@ describe('integration', () => {
     }
   });
 
-  it('lints weekly-report with 0 errors', async () => {
+  it('lints worksummary with 0 errors', async () => {
     const root = process.cwd();
     const results = await lintSkill(
-      join(root, 'skills', 'weekly-report'),
+      join(root, 'skills', 'worksummary'),
       join(root, 'platforms'),
     );
     const errors = results.filter(r => !r.passed && r.severity === 'error');

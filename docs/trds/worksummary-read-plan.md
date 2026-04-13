@@ -1,20 +1,20 @@
-# Weekly read Function Implementation Plan
+# Work Summary read Function Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Implement the `read` function for the weekly skill -- smart reading that reorganizes team reports from per-person to per-topic with three-layer hierarchy (dimension -> topic -> person).
+**Goal:** Implement the `read` function for the worksummary skill -- smart reading that reorganizes team reports from per-person to per-topic with three-layer hierarchy (dimension -> topic -> person).
 
 **Architecture:** Content-only implementation (no TypeScript code). Create STE template + example files, update SKILL.md with the new function definition and file index entries. The spec (read-requirements.md) already exists.
 
 **Tech Stack:** Markdown (skill content files)
 
-**Spec reference:** `skills/weekly/specs/read-requirements.md`, `docs/trds/weekly-read-design.md`
+**Spec reference:** `skills/worksummary/specs/read-requirements.md`, `docs/trds/worksummary-read-design.md`
 
 
 ## File Structure
 
 ```
-skills/weekly/
+skills/worksummary/
   SKILL.md                                    # Modify: add read function + command table entry
   templates/
     smart-read.md                             # Create: output structure skeleton
@@ -26,7 +26,7 @@ skills/weekly/
 ## Task 1: Create smart-read template
 
 **Files:**
-- Create: `skills/weekly/templates/smart-read.md`
+- Create: `skills/worksummary/templates/smart-read.md`
 
 - [ ] **Step 1: Create the template file**
 
@@ -68,21 +68,21 @@ skills/weekly/
 
 - [ ] **Step 2: Verify file exists**
 
-Run: `ls -la skills/weekly/templates/smart-read.md`
+Run: `ls -la skills/worksummary/templates/smart-read.md`
 Expected: file exists
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add skills/weekly/templates/smart-read.md
-git commit -m "feat(weekly): add smart-read template for read function"
+git add skills/worksummary/templates/smart-read.md
+git commit -m "feat(worksummary): add smart-read template for read function"
 ```
 
 
 ## Task 2: Create smart-read example
 
 **Files:**
-- Create: `skills/weekly/examples/smart-read-example.md`
+- Create: `skills/worksummary/examples/smart-read-example.md`
 
 - [ ] **Step 1: Create the example file**
 
@@ -183,21 +183,21 @@ Use generic names and fictional data. No real business data.
 
 - [ ] **Step 2: Verify file exists**
 
-Run: `ls -la skills/weekly/examples/smart-read-example.md`
+Run: `ls -la skills/worksummary/examples/smart-read-example.md`
 Expected: file exists
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add skills/weekly/examples/smart-read-example.md
-git commit -m "feat(weekly): add smart-read example for read function"
+git add skills/worksummary/examples/smart-read-example.md
+git commit -m "feat(worksummary): add smart-read example for read function"
 ```
 
 
 ## Task 3: Update SKILL.md
 
 **Files:**
-- Modify: `skills/weekly/SKILL.md`
+- Modify: `skills/worksummary/SKILL.md`
 
 - [ ] **Step 1: Add `read` to commands table**
 
@@ -238,14 +238,14 @@ Update the action routing AskUserQuestion options:
 
 - [ ] **Step 5: Verify lint passes**
 
-Run: `npx tsx src/cli/index.ts lint weekly`
+Run: `npx tsx src/cli/index.ts lint worksummary`
 Expected: 11 passed
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add skills/weekly/SKILL.md
-git commit -m "feat(weekly): add read function to SKILL.md"
+git add skills/worksummary/SKILL.md
+git commit -m "feat(worksummary): add read function to SKILL.md"
 ```
 
 
@@ -263,7 +263,7 @@ Expected: Build complete for 2 platforms
 - [ ] **Step 2: Reinstall**
 
 ```bash
-npx tsx src/cli/index.ts install weekly --force
+npx tsx src/cli/index.ts install worksummary --force
 ```
 
 Expected: Installed to claude and joycode
@@ -280,7 +280,7 @@ Expected: All tests pass
 
 ```bash
 git add -A
-git commit -m "feat(weekly): complete read function implementation"
+git commit -m "feat(worksummary): complete read function implementation"
 ```
 
 
@@ -289,7 +289,7 @@ git commit -m "feat(weekly): complete read function implementation"
 - [ ] **Step 1: Verify complete file structure**
 
 ```bash
-find skills/weekly -type f | sort
+find skills/worksummary -type f | sort
 ```
 
 Expected: smart-read.md in templates/ and examples/
@@ -310,7 +310,7 @@ Expected: smart-read.md in templates/ and examples/
 - [ ] **Step 3: Verify no sensitive data in any file**
 
 ```bash
-grep -r "韩威\|侯会斌\|gaoting59\|wangkaixuan" skills/weekly/ --include="*.md" || echo "CLEAN"
+grep -r "韩威\|侯会斌\|gaoting59\|wangkaixuan" skills/worksummary/ --include="*.md" || echo "CLEAN"
 ```
 
 Expected: CLEAN

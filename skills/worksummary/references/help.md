@@ -1,4 +1,4 @@
-# Weekly Skill Help
+# Work Summary Skill Help
 
 ## Dynamic Status Report
 
@@ -11,7 +11,7 @@ When help is triggered, display a dynamic status report based on current state.
 2. **Show available commands** with current readiness status:
 
 ```
-Weekly Skill Commands:
+Work Summary Commands:
   summarize    -- Fetch and summarize team reports     [Ready]
   aggregate    -- Team overview with risk analysis     [Ready]
   generate     -- Your personal weekly report          [Ready / Needs style profile]

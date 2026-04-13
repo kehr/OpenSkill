@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 
 describe('integration', () => {
-  it('builds weekly for all platforms', async () => {
+  it('builds worksummary for all platforms', async () => {
     const root = process.cwd();
     const distDir = join(tmpdir(), `openskill-integration-${Date.now()}`);
 
@@ -23,7 +23,7 @@ describe('integration', () => {
       for (const r of results) {
         expect(r.skillsCount).toBeGreaterThanOrEqual(1);
         const skillMd = await readFile(
-          join(distDir, r.platform, 'skills/weekly/SKILL.md'), 'utf-8'
+          join(distDir, r.platform, 'skills/worksummary/SKILL.md'), 'utf-8'
         );
         expect(skillMd).not.toContain('{{configDir}}');
       }
@@ -32,10 +32,10 @@ describe('integration', () => {
     }
   });
 
-  it('lints weekly with 0 errors', async () => {
+  it('lints worksummary with 0 errors', async () => {
     const root = process.cwd();
     const results = await lintSkill(
-      join(root, 'skills', 'weekly'),
+      join(root, 'skills', 'worksummary'),
       join(root, 'platforms'),
     );
     const errors = results.filter(r => !r.passed && r.severity === 'error');

@@ -72,7 +72,7 @@ The `render` field in `skill.json` declares which files require Handlebars templ
 
 | Skill | Description |
 |-------|------|
-| weekly-report | Generate high-density, data-driven, problem-oriented manager weekly reports |
+| worksummary | Work Summary automation for managers |
 
 ## Development
 
@@ -129,4 +129,4 @@ dist/
 
 ## Skill Guides
 
-- [Weekly](docs/guides/weekly/) -- Weekly report automation for managers
+- [Work Summary](docs/guides/worksummary/) -- Work Summary automation for managers

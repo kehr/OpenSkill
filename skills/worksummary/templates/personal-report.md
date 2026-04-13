@@ -1,4 +1,4 @@
-# Weekly Report - [Date Range]
+# Work Summary - [Date Range]
 
 > Author: [User Name]
 

@@ -51,10 +51,10 @@ Publishing phase:
 Usage phase:
   npm install -g @kehr/openskill
        │
-       │  openskill install weekly-report
+       │  openskill install worksummary
        │  (copies dist/{platform}/ → target directory)
        ▼
-  ~/.claude/skills/openskill/weekly-report/
+  ~/.claude/skills/openskill/worksummary/
   ~/.claude/agents/openskill/
 ```
 
@@ -108,7 +108,7 @@ openskill/
 │   └── types.ts                # Shared type definitions
 │
 ├── skills/                     # Skill source code (with template variables)
-│   └── weekly-report/          # Example skill (first built-in skill)
+│   └── worksummary/          # Example skill (first built-in skill)
 │       ├── SKILL.md
 │       ├── skill.json
 │       ├── specs/
@@ -221,9 +221,9 @@ Common mistakes and fixes.
 
 ```json
 {
-  "name": "weekly-report",
+  "name": "worksummary",
   "version": "1.0.0",
-  "description": "Generate manager weekly reports",
+  "description": "Work Summary automation for managers",
   "type": "skill",
   "platforms": ["claude", "joycode"],
   "render": ["SKILL.md", "specs/*.md"],
@@ -330,7 +330,7 @@ Files declared in the `render` field of `skill.json` can use the following varia
 dist/
 ├── claude/
 │   ├── skills/openskill/
-│   │   └── weekly-report/
+│   │   └── worksummary/
 │   │       ├── SKILL.md          # Rendered, {{configDir}} → .claude
 │   │       ├── skill.json        # Metadata (used by install command)
 │   │       ├── specs/
@@ -339,7 +339,7 @@ dist/
 │   └── agents/openskill/
 └── joycode/
     ├── skills/openskill/
-    │   └── weekly-report/
+    │   └── worksummary/
     │       ├── SKILL.md          # Rendered, {{configDir}} → .joycode
     │       ├── skill.json
     │       ├── specs/
@@ -355,9 +355,9 @@ dist/
 
 | Command | Purpose | Example |
 |------|------|------|
-| `openskill install <name>` | Install a skill to the target platform | `openskill install weekly-report` |
+| `openskill install <name>` | Install a skill to the target platform | `openskill install worksummary` |
 | `openskill install --all` | Install all skills | |
-| `openskill uninstall <name>` | Uninstall an installed skill | `openskill uninstall weekly-report` |
+| `openskill uninstall <name>` | Uninstall an installed skill | `openskill uninstall worksummary` |
 | `openskill list` | List all available/installed skills | `openskill list` |
 | `openskill create <name>` | Scaffold a new skill (with STE structure) | `openskill create code-review` |
 | `openskill lint [name]` | Validate skill format compliance | `openskill lint` (all) |
@@ -426,11 +426,11 @@ openskill list [--installed] [--platform claude|joycode]
 Output format:
 ```
 Available skills:
-  weekly-report    v1.0.0  Generate manager weekly reports
+  worksummary    v1.0.0  Work Summary automation for managers
   code-review      v1.0.0  Code review assistant
 
 Installed (claude):
-  ✓ weekly-report  v1.0.0  ~/.claude/skills/openskill/weekly-report/
+  ✓ worksummary  v1.0.0  ~/.claude/skills/openskill/worksummary/
 ```
 
 ### 7.6 create Command
@@ -482,7 +482,7 @@ Validation rules:
 
 Output format:
 ```
-Linting weekly-report...
+Linting worksummary...
   ✓ skill-md-exists
   ✓ frontmatter-valid
   ✓ name-format
@@ -537,17 +537,17 @@ Each platform maintains an installation manifest file that records installed ski
   "platform": "claude",
   "installedAt": "2026-03-28T10:00:00Z",
   "skills": {
-    "weekly-report": {
+    "worksummary": {
       "version": "1.0.0",
       "installedAt": "2026-03-28T10:00:00Z",
-      "agents": ["weekly-report-agent"]
+      "agents": ["worksummary-agent"]
     }
   },
   "agents": {
-    "weekly-report-agent": {
+    "worksummary-agent": {
       "version": "1.0.0",
       "installedAt": "2026-03-28T10:00:00Z",
-      "referencedBy": ["weekly-report"]
+      "referencedBy": ["worksummary"]
     }
   }
 }

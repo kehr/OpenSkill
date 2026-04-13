@@ -1,11 +1,11 @@
-# Weekly Skill: read Function Design
+# Work Summary Skill: read Function Design
 
 > Date: 2026-03-29
 > Status: Draft
 
 ## 1. Overview
 
-`read` is a new function for the weekly skill that transforms team weekly reports from "organized by person" into "organized by topic". It enables managers to quickly scan all team activity across their focus areas without reading 24 individual reports sequentially.
+`read` is a new function for the worksummary skill that transforms team weekly reports from "organized by person" into "organized by topic". It enables managers to quickly scan all team activity across their focus areas without reading 24 individual reports sequentially.
 
 ## 2. Input
 

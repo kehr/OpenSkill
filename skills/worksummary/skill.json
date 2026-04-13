@@ -1,7 +1,7 @@
 {
-  "name": "weekly",
+  "name": "worksummary",
   "version": "1.0.0",
-  "description": "Weekly report automation for managers",
+  "description": "Work Summary automation for managers",
   "type": "skill",
   "platforms": ["claude", "joycode"],
   "render": ["SKILL.md", "specs/*.md"],

@@ -1,22 +1,22 @@
-# Weekly Skill Implementation Plan
+# Work Summary Skill Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Implement the `weekly` Claude Code skill -- a complete weekly report automation system that fetches Outlook emails, summarizes team reports, aggregates with risk analysis, and generates the user's personal report.
+**Goal:** Implement the `worksummary` Claude Code skill -- a complete work summary automation system that fetches Outlook emails, summarizes team reports, aggregates with risk analysis, and generates the user's personal report.
 
 **Architecture:** Claude Code skill (SKILL.md orchestrates AI). Python CLI tool fetches emails from Outlook via JXA. AI does all understanding, analysis, and generation. File system provides persistence via config/ and memory/ directories. STE pattern: each function has dedicated spec + template + example.
 
 **Tech Stack:** Python 3 (email fetcher), Markdown (skill content), JSON (config), JXA/osascript (Outlook bridge)
 
-**Spec reference:** `docs/trds/weekly-skill-design.md`
+**Spec reference:** `docs/trds/worksummary-skill-design.md`
 
-**Important:** The existing `skills/weekly-report/` directory must be removed first and replaced with the new `skills/weekly/` structure.
+**Important:** The existing `skills/weekly-report/` directory must be removed first and replaced with the new `skills/worksummary/` structure.
 
 
 ## File Structure
 
 ```
-skills/weekly/                          # NEW skill (replaces skills/weekly-report/)
+skills/worksummary/                          # NEW skill (replaces skills/weekly-report/)
   SKILL.md                              # Orchestration entry point
   skill.json                            # Build metadata
   config/
@@ -47,7 +47,7 @@ Files to delete:
 
 **Files:**
 - Delete: `skills/weekly-report/` (entire directory)
-- Create: `skills/weekly/` directory tree
+- Create: `skills/worksummary/` directory tree
 
 - [ ] **Step 1: Remove the old weekly-report skill**
 
@@ -58,11 +58,11 @@ rm -rf skills/weekly-report
 - [ ] **Step 2: Create the new directory structure**
 
 ```bash
-mkdir -p skills/weekly/config
-mkdir -p skills/weekly/scripts
-mkdir -p skills/weekly/specs
-mkdir -p skills/weekly/templates
-mkdir -p skills/weekly/examples
+mkdir -p skills/worksummary/config
+mkdir -p skills/worksummary/scripts
+mkdir -p skills/worksummary/specs
+mkdir -p skills/worksummary/templates
+mkdir -p skills/worksummary/examples
 ```
 
 - [ ] **Step 3: Commit**
@@ -76,17 +76,17 @@ git commit -m "refactor: remove weekly-report skill, prepare weekly skill struct
 ## Task 2: skill.json and Default Config
 
 **Files:**
-- Create: `skills/weekly/skill.json`
-- Create: `skills/weekly/config/config.json`
-- Create: `skills/weekly/config/rules.md`
+- Create: `skills/worksummary/skill.json`
+- Create: `skills/worksummary/config/config.json`
+- Create: `skills/worksummary/config/rules.md`
 
 - [ ] **Step 1: Create skill.json**
 
 ```json
 {
-  "name": "weekly",
+  "name": "worksummary",
   "version": "1.0.0",
-  "description": "Weekly report automation for managers",
+  "description": "Work Summary automation for managers",
   "type": "skill",
   "platforms": ["claude", "joycode"],
   "render": ["SKILL.md", "specs/*.md"],
@@ -103,7 +103,7 @@ git commit -m "refactor: remove weekly-report skill, prepare weekly skill struct
   "folder": "inbox",
   "limit": 100,
   "date_range": "current_week",
-  "output_dir": "weekly/output",
+  "output_dir": "worksummary/output",
   "language": "auto"
 }
 ```
@@ -137,15 +137,15 @@ delay, understaffed, single point of failure, technical debt overdue
 - [ ] **Step 4: Commit**
 
 ```bash
-git add skills/weekly/skill.json skills/weekly/config/
-git commit -m "feat(weekly): add skill metadata and default config"
+git add skills/worksummary/skill.json skills/worksummary/config/
+git commit -m "feat(worksummary): add skill metadata and default config"
 ```
 
 
 ## Task 3: Email Fetcher Script
 
 **Files:**
-- Create: `skills/weekly/scripts/fetch-outlook-emails.py`
+- Create: `skills/worksummary/scripts/fetch-outlook-emails.py`
 
 - [ ] **Step 1: Create the Python CLI tool**
 
@@ -335,13 +335,13 @@ if __name__ == "__main__":
 - [ ] **Step 2: Make executable**
 
 ```bash
-chmod +x skills/weekly/scripts/fetch-outlook-emails.py
+chmod +x skills/worksummary/scripts/fetch-outlook-emails.py
 ```
 
 - [ ] **Step 3: Verify syntax**
 
 ```bash
-python3 -c "import ast; ast.parse(open('skills/weekly/scripts/fetch-outlook-emails.py').read()); print('OK')"
+python3 -c "import ast; ast.parse(open('skills/worksummary/scripts/fetch-outlook-emails.py').read()); print('OK')"
 ```
 
 Expected: `OK`
@@ -349,18 +349,18 @@ Expected: `OK`
 - [ ] **Step 4: Commit**
 
 ```bash
-git add skills/weekly/scripts/
-git commit -m "feat(weekly): add Outlook email fetcher CLI tool"
+git add skills/worksummary/scripts/
+git commit -m "feat(worksummary): add Outlook email fetcher CLI tool"
 ```
 
 
 ## Task 4: Spec Files
 
 **Files:**
-- Create: `skills/weekly/specs/summarize-requirements.md`
-- Create: `skills/weekly/specs/aggregate-requirements.md`
-- Create: `skills/weekly/specs/generate-requirements.md`
-- Create: `skills/weekly/specs/learn-style-requirements.md`
+- Create: `skills/worksummary/specs/summarize-requirements.md`
+- Create: `skills/worksummary/specs/aggregate-requirements.md`
+- Create: `skills/worksummary/specs/generate-requirements.md`
+- Create: `skills/worksummary/specs/learn-style-requirements.md`
 
 - [ ] **Step 1: Create summarize-requirements.md**
 
@@ -521,7 +521,7 @@ Minimum: 2 samples. Recommended: 3-5 samples for reliable style extraction.
 
 ## Output
 
-Write to `.openskill/weekly/memory/style-profile.md`:
+Write to `.openskill/worksummary/memory/style-profile.md`:
 
 ```
 # Style Profile
@@ -559,17 +559,17 @@ Write to `.openskill/weekly/memory/style-profile.md`:
 - [ ] **Step 5: Commit**
 
 ```bash
-git add skills/weekly/specs/
-git commit -m "feat(weekly): add STE spec files for all functions"
+git add skills/worksummary/specs/
+git commit -m "feat(worksummary): add STE spec files for all functions"
 ```
 
 
 ## Task 5: Template Files
 
 **Files:**
-- Create: `skills/weekly/templates/individual-summary.md`
-- Create: `skills/weekly/templates/team-aggregate.md`
-- Create: `skills/weekly/templates/personal-report.md`
+- Create: `skills/worksummary/templates/individual-summary.md`
+- Create: `skills/worksummary/templates/team-aggregate.md`
+- Create: `skills/worksummary/templates/personal-report.md`
 
 - [ ] **Step 1: Create individual-summary.md**
 
@@ -667,17 +667,17 @@ git commit -m "feat(weekly): add STE spec files for all functions"
 - [ ] **Step 4: Commit**
 
 ```bash
-git add skills/weekly/templates/
-git commit -m "feat(weekly): add STE template files for all output types"
+git add skills/worksummary/templates/
+git commit -m "feat(worksummary): add STE template files for all output types"
 ```
 
 
 ## Task 6: Example Files
 
 **Files:**
-- Create: `skills/weekly/examples/individual-summary-example.md`
-- Create: `skills/weekly/examples/team-aggregate-example.md`
-- Create: `skills/weekly/examples/personal-report-example.md`
+- Create: `skills/worksummary/examples/individual-summary-example.md`
+- Create: `skills/worksummary/examples/team-aggregate-example.md`
+- Create: `skills/worksummary/examples/personal-report-example.md`
 
 - [ ] **Step 1: Create individual-summary-example.md**
 
@@ -799,15 +799,15 @@ Processed 5 weekly reports. Team overall on track with 3 major deliverables comp
 - [ ] **Step 4: Commit**
 
 ```bash
-git add skills/weekly/examples/
-git commit -m "feat(weekly): add STE example files for all output types"
+git add skills/worksummary/examples/
+git commit -m "feat(worksummary): add STE example files for all output types"
 ```
 
 
 ## Task 7: SKILL.md -- The Orchestration File
 
 **Files:**
-- Create: `skills/weekly/SKILL.md`
+- Create: `skills/worksummary/SKILL.md`
 
 This is the most important file -- it tells the AI exactly how to execute the weekly skill.
 
@@ -815,7 +815,7 @@ This is the most important file -- it tells the AI exactly how to execute the we
 
 ```markdown
 ---
-name: weekly
+name: worksummary
 description: Use when the user wants to summarize team weekly reports from Outlook, aggregate team progress with risk analysis, generate their own weekly report, learn their writing style from samples, or configure weekly report settings
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 ---
@@ -837,7 +837,7 @@ Available commands:
 
 On every invocation:
 
-1. Determine the data directory. Check for `.openskill/weekly/` in the current directory first (project-level), then `~/.openskill/weekly/` (user-level). If neither exists, use project-level and create it.
+1. Determine the data directory. Check for `.openskill/worksummary/` in the current directory first (project-level), then `~/.openskill/worksummary/` (user-level). If neither exists, use project-level and create it.
 
 2. Read `{data-dir}/memory/user.md` if it exists. Greet the user by name. If it does not exist, this is the first run -- ask the user for their name or preferred greeting, then create `{data-dir}/memory/user.md`.
 
@@ -884,7 +884,7 @@ Trigger: user asks to summarize weekly reports, or says "summarize this week"
 
 7. Generate one summary per person. Reference `examples/individual-summary-example.md` for the expected quality level.
 
-8. Create the output directory: `{output-dir}/YYYY-WNN/` (e.g., `weekly/output/2026-W13/`). If the directory already exists, AI should ask the user whether to overwrite.
+8. Create the output directory: `{output-dir}/YYYY-WNN/` (e.g., `worksummary/output/2026-W13/`). If the directory already exists, AI should ask the user whether to overwrite.
 
 9. Write summaries to `{output-dir}/YYYY-WNN/individual-summaries.md`.
 
@@ -1003,15 +1003,15 @@ After every operation that produces output:
 - [ ] **Step 2: Commit**
 
 ```bash
-git add skills/weekly/SKILL.md
-git commit -m "feat(weekly): add SKILL.md orchestration file"
+git add skills/worksummary/SKILL.md
+git commit -m "feat(worksummary): add SKILL.md orchestration file"
 ```
 
 
 ## Task 8: Update Existing Framework References
 
 **Files:**
-- Modify: `skills/weekly/skill.json` (already created, verify `render` field includes config/)
+- Modify: `skills/worksummary/skill.json` (already created, verify `render` field includes config/)
 
 - [ ] **Step 1: Verify openskill build works with the new skill**
 
@@ -1019,12 +1019,12 @@ git commit -m "feat(weekly): add SKILL.md orchestration file"
 npx tsx src/cli/index.ts build --verbose
 ```
 
-Expected: Should build the `weekly` skill for both platforms. If it fails because `weekly-report` references remain, fix them.
+Expected: Should build the `worksummary` skill for both platforms. If it fails because `weekly-report` references remain, fix them.
 
 - [ ] **Step 2: Verify openskill lint passes**
 
 ```bash
-npx tsx src/cli/index.ts lint weekly
+npx tsx src/cli/index.ts lint worksummary
 ```
 
 Expected: 0 errors. Warnings are acceptable (e.g., examples-has-content if example files exist).
@@ -1037,10 +1037,10 @@ npx vitest run
 
 Expected: All tests pass. The integration test references `weekly-report` and needs to be updated.
 
-- [ ] **Step 4: Update integration test to reference `weekly` instead of `weekly-report`**
+- [ ] **Step 4: Update integration test to reference `worksummary` instead of `weekly-report`**
 
 Edit `tests/integration.test.ts`:
-- Change `weekly-report` to `weekly` in all paths
+- Change `weekly-report` to `worksummary` in all paths
 
 - [ ] **Step 5: Run tests again**
 
@@ -1063,26 +1063,26 @@ git commit -m "fix: update integration tests for weekly skill rename"
 - [ ] **Step 1: Verify complete file structure**
 
 ```bash
-find skills/weekly -type f | sort
+find skills/worksummary -type f | sort
 ```
 
 Expected output:
 ```
-skills/weekly/SKILL.md
-skills/weekly/config/config.json
-skills/weekly/config/rules.md
-skills/weekly/examples/individual-summary-example.md
-skills/weekly/examples/personal-report-example.md
-skills/weekly/examples/team-aggregate-example.md
-skills/weekly/scripts/fetch-outlook-emails.py
-skills/weekly/skill.json
-skills/weekly/specs/aggregate-requirements.md
-skills/weekly/specs/generate-requirements.md
-skills/weekly/specs/learn-style-requirements.md
-skills/weekly/specs/summarize-requirements.md
-skills/weekly/templates/individual-summary.md
-skills/weekly/templates/personal-report.md
-skills/weekly/templates/team-aggregate.md
+skills/worksummary/SKILL.md
+skills/worksummary/config/config.json
+skills/worksummary/config/rules.md
+skills/worksummary/examples/individual-summary-example.md
+skills/worksummary/examples/personal-report-example.md
+skills/worksummary/examples/team-aggregate-example.md
+skills/worksummary/scripts/fetch-outlook-emails.py
+skills/worksummary/skill.json
+skills/worksummary/specs/aggregate-requirements.md
+skills/worksummary/specs/generate-requirements.md
+skills/worksummary/specs/learn-style-requirements.md
+skills/worksummary/specs/summarize-requirements.md
+skills/worksummary/templates/individual-summary.md
+skills/worksummary/templates/personal-report.md
+skills/worksummary/templates/team-aggregate.md
 ```
 
 - [ ] **Step 2: Verify build**
@@ -1096,7 +1096,7 @@ Expected: Build complete for both platforms.
 - [ ] **Step 3: Verify lint**
 
 ```bash
-npx tsx src/cli/index.ts lint weekly
+npx tsx src/cli/index.ts lint worksummary
 ```
 
 Expected: 0 errors.
@@ -1132,5 +1132,5 @@ Cross-reference against design doc sections:
 
 ```bash
 git add -A
-git commit -m "feat(weekly): complete weekly skill implementation"
+git commit -m "feat(worksummary): complete weekly skill implementation"
 ```

@@ -1,10 +1,10 @@
 ---
-name: weekly
-description: Use when the user wants to summarize team weekly reports from Outlook, aggregate team progress with risk analysis, generate their own weekly report, learn their writing style from samples, or configure weekly report settings
+name: worksummary
+description: Use when the user wants to summarize team work reports from Outlook, aggregate team progress with risk analysis, generate their own work summary, learn their writing style from samples, or configure work summary settings
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, AskUserQuestion, Agent
 ---
 
-# Weekly Report Automation
+# Work Summary Automation
 
 Fetch team emails from Outlook, summarize, aggregate with risk analysis, and generate your personal report.
 
@@ -48,10 +48,10 @@ Example for summarize:
 
 On every invocation:
 
-1. **Data directory**: check `.openskill/weekly/` (project-level) first, then `~/.openskill/weekly/` (user-level). Create if missing.
+1. **Data directory**: check `.openskill/worksummary/` (project-level) first, then `~/.openskill/worksummary/` (user-level). Create if missing.
 
 2. **User identity**: read `{data-dir}/memory/user.md`. If missing (first run), use `AskUserQuestion`:
-   - Q1: "Welcome to Weekly! What's your name?" (Other for free input)
+   - Q1: "Welcome to Work Summary! What's your name?" (Other for free input)
    - Q2: "输出语言偏好？ / Preferred language?" Options: "中文" | "English"
    - Save to `{data-dir}/memory/user.md` and `{data-dir}/config/config.json`
 

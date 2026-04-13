@@ -1,11 +1,11 @@
-# Weekly Skill Design Document
+# Work Summary Skill Design Document
 
 > Date: 2026-03-29
 > Status: Draft
 
 ## 1. Overview
 
-`weekly` is a Claude Code skill that automates the weekly report workflow for managers. It reads team members' weekly report emails from macOS Outlook, summarizes and aggregates them with risk analysis, and generates the user's own weekly report in their personal writing style.
+`worksummary` is a Claude Code skill that automates the work summary workflow for managers. It reads team members' weekly report emails from macOS Outlook, summarizes and aggregates them with risk analysis, and generates the user's own weekly report in their personal writing style.
 
 **Runtime model:** Claude Code skill. AI loads SKILL.md and follows orchestration instructions. Python script handles data fetching. AI handles understanding, analysis, and generation. File system handles persistence.
 
@@ -17,26 +17,26 @@
 
 | Layer | Component | Location | Role |
 |-------|-----------|----------|------|
-| Skill definition | SKILL.md | `skills/weekly/` | Orchestration -- guides AI through all workflows |
-| Data fetching | fetch-outlook-emails.py | `skills/weekly/scripts/` | CLI tool: fetch Outlook emails -> JSON stdout |
-| Specs | per-function requirements | `skills/weekly/specs/` | STE-S: execution standards for each function |
-| Templates | per-function output templates | `skills/weekly/templates/` | STE-T: output format for each function |
-| Examples | reference outputs | `skills/weekly/examples/` | STE-E: demonstrations |
-| Default config | config.json, rules.md | `skills/weekly/config/` | Built-in defaults (shipped with skill) |
-| User config | config.json, rules.md | `.openskill/weekly/config/` | User overrides (merged on top of defaults) |
-| Memory | user, style, context, history | `.openskill/weekly/memory/` | Persistent state across sessions |
-| Output | generated reports | `weekly/output/` (cwd) | Generated deliverables (dir configurable) |
+| Skill definition | SKILL.md | `skills/worksummary/` | Orchestration -- guides AI through all workflows |
+| Data fetching | fetch-outlook-emails.py | `skills/worksummary/scripts/` | CLI tool: fetch Outlook emails -> JSON stdout |
+| Specs | per-function requirements | `skills/worksummary/specs/` | STE-S: execution standards for each function |
+| Templates | per-function output templates | `skills/worksummary/templates/` | STE-T: output format for each function |
+| Examples | reference outputs | `skills/worksummary/examples/` | STE-E: demonstrations |
+| Default config | config.json, rules.md | `skills/worksummary/config/` | Built-in defaults (shipped with skill) |
+| User config | config.json, rules.md | `.openskill/worksummary/config/` | User overrides (merged on top of defaults) |
+| Memory | user, style, context, history | `.openskill/worksummary/memory/` | Persistent state across sessions |
+| Output | generated reports | `worksummary/output/` (cwd) | Generated deliverables (dir configurable) |
 
 ### 2.2 Data Flow
 
 ```
-User: "/weekly summarize this week"
+User: "/worksummary summarize this week"
   |
   v
 AI loads SKILL.md
   -> reads memory/user.md -> greets user by name
   -> reads built-in config/config.json
-  -> overlays .openskill/weekly/config/config.json (if exists)
+  -> overlays .openskill/worksummary/config/config.json (if exists)
   |
   v
 AI calls: python scripts/fetch-outlook-emails.py \
@@ -68,7 +68,7 @@ AI reads memory/style-profile.md
   |
   v
 Output written to {output-dir}/2026-W13/
-Memory updated in .openskill/weekly/memory/history/
+Memory updated in .openskill/worksummary/memory/history/
 ```
 
 ### 2.3 Config Merge Logic
@@ -77,14 +77,14 @@ Two layers, higher priority wins:
 
 | Priority | Location | Description |
 |----------|----------|-------------|
-| Lowest | `skills/weekly/config/` | Built-in defaults shipped with skill |
-| Highest | `.openskill/weekly/config/` | User overrides |
+| Lowest | `skills/worksummary/config/` | Built-in defaults shipped with skill |
+| Highest | `.openskill/worksummary/config/` | User overrides |
 
 For config.json: AI reads built-in first, then overlays user version. User config only needs fields they want to override.
 
 For rules.md: if user version exists, use it entirely; otherwise use built-in default.
 
-`.openskill/weekly/` follows the skill's install scope: user-level (`~/.openskill/weekly/`) or project-level (`.openskill/weekly/`).
+`.openskill/worksummary/` follows the skill's install scope: user-level (`~/.openskill/worksummary/`) or project-level (`.openskill/worksummary/`).
 
 ### 2.4 Graceful Onboarding
 
@@ -97,7 +97,7 @@ No hard gate -- the skill degrades gracefully and guides the user through setup 
 
 ## 3. Email Fetcher: fetch-outlook-emails.py
 
-Standalone Python CLI tool in `skills/weekly/scripts/`. Fetches emails from macOS Outlook via JXA, outputs JSON to stdout.
+Standalone Python CLI tool in `skills/worksummary/scripts/`. Fetches emails from macOS Outlook via JXA, outputs JSON to stdout.
 
 ### 3.1 CLI Interface
 
@@ -166,7 +166,7 @@ Title date parsing, relevance filtering, content analysis, summarization. Those 
 | **aggregate** | "aggregate team report" | Summaries | Team aggregate with risk analysis | spec + template + example |
 | **generate** | "generate my report" | Aggregate + style profile | User's own weekly report | spec + template + example |
 | **learn-style** | "learn my report style" | User samples (screenshots/text/md) | Updated style-profile.md | spec (no template -- output is the style profile itself) |
-| **configure** | "configure weekly" | User input (interactive) | Updated config.json / rules.md | N/A (interactive guided flow) |
+| **configure** | "configure worksummary" | User input (interactive) | Updated config.json / rules.md | N/A (interactive guided flow) |
 
 ### 4.2 Workflow Dependency
 
@@ -230,7 +230,7 @@ Python tool filters emails by `received_time` range. AI then examines email subj
 
 ## 6. Memory System
 
-All memory lives in `.openskill/weekly/memory/`.
+All memory lives in `.openskill/worksummary/memory/`.
 
 ### 6.1 Files
 
@@ -272,7 +272,7 @@ SKILL.md instructs AI:
 
 ### 7.1 config.json
 
-Built-in default (`skills/weekly/config/config.json`):
+Built-in default (`skills/worksummary/config/config.json`):
 
 ```json
 {
@@ -281,7 +281,7 @@ Built-in default (`skills/weekly/config/config.json`):
   "folder": "inbox",
   "limit": 100,
   "date_range": "current_week",
-  "output_dir": "weekly/output",
+  "output_dir": "worksummary/output",
   "language": "zh"
 }
 ```
@@ -293,12 +293,12 @@ Built-in default (`skills/weekly/config/config.json`):
 | `folder` | string | `"inbox"` | Outlook folder to read |
 | `limit` | number | `100` | Max emails to fetch |
 | `date_range` | string | `"current_week"` | `"current_week"`, `"last_week"`, or `"YYYY-MM-DD:YYYY-MM-DD"` |
-| `output_dir` | string | `"weekly/output"` | Output directory (relative to cwd, or absolute path) |
+| `output_dir` | string | `"worksummary/output"` | Output directory (relative to cwd, or absolute path) |
 | `language` | string | `"zh"` | Output language. `"zh"` (Chinese, default), `"en"` (English), or `"auto"` (match input) |
 
 ### 7.2 rules.md
 
-Built-in default (`skills/weekly/config/rules.md`):
+Built-in default (`skills/worksummary/config/rules.md`):
 
 ```markdown
 # Analysis Rules
@@ -326,7 +326,7 @@ delay, understaffed, single point of failure, technical debt overdue
 ### 8.1 Skill Source (shipped, built, installed)
 
 ```
-skills/weekly/
+skills/worksummary/
   SKILL.md
   skill.json
   config/
@@ -352,7 +352,7 @@ skills/weekly/
 ### 8.2 Runtime Data (created by AI during execution)
 
 ```
-.openskill/weekly/                      # User-level or project-level
+.openskill/worksummary/                      # User-level or project-level
   config/
     config.json                         # User config overrides (optional)
     rules.md                            # User custom rules (optional)
@@ -363,7 +363,7 @@ skills/weekly/
     history/
       2026-W13.md                       # Weekly execution record
 
-{cwd}/weekly/output/                    # Default output dir (configurable)
+{cwd}/worksummary/output/                    # Default output dir (configurable)
   2026-W13/
     individual-summaries.md
     team-aggregate.md
@@ -373,9 +373,9 @@ skills/weekly/
 ### 8.3 Directory Auto-Creation
 
 AI checks and creates directories before writing:
-- `.openskill/weekly/config/`
-- `.openskill/weekly/memory/`
-- `.openskill/weekly/memory/history/`
+- `.openskill/worksummary/config/`
+- `.openskill/worksummary/memory/`
+- `.openskill/worksummary/memory/history/`
 - `{output_dir}/YYYY-WNN/`
 
 ## 9. Skill Metadata
@@ -384,9 +384,9 @@ AI checks and creates directories before writing:
 
 ```json
 {
-  "name": "weekly",
+  "name": "worksummary",
   "version": "1.0.0",
-  "description": "Weekly report automation for managers",
+  "description": "Work Summary automation for managers",
   "type": "skill",
   "platforms": ["claude", "joycode"],
   "render": ["SKILL.md", "specs/*.md"],
@@ -398,8 +398,8 @@ AI checks and creates directories before writing:
 
 ```yaml
 ---
-name: weekly
-description: Use when the user wants to summarize team weekly reports from Outlook, aggregate team progress with risk analysis, generate their own weekly report, learn their writing style from samples, or configure weekly report settings
+name: worksummary
+description: Use when the user wants to summarize team work reports from Outlook, aggregate team progress with risk analysis, generate their own work summary, learn their writing style from samples, or configure work summary settings
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 ---
 ```

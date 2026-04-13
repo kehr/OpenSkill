@@ -1,4 +1,4 @@
-# Team Weekly Aggregate - 2026-03-23 ~ 2026-03-29
+# Team Work Summary - 2026-03-23 ~ 2026-03-29
 
 ## Team Overview
 Processed 5 weekly reports. Team overall on track with 3 major deliverables completed. 2 high-priority risks identified, both related to external dependencies.
