@@ -24,6 +24,7 @@ The user has selected one of two style tracks: `anthropic`, `openai-research`.
 10. No emoji anywhere in the body.
 11. No `---` horizontal rule separators in the body. The frontmatter delimiter is the only allowed `---`.
 12. No AI / Claude / Anthropic / OpenAI / generated-by watermark in the body or in any commit message produced as a side effect.
+13. ASCII-only punctuation in body prose. Unicode arrows (`→`, `⟶`, `↦`, `⇒`, `⇨`, `➔`, `➡`, `←`, `⇐`, `⇔`, `⇄`, `↔`) and the horizontal ellipsis `…` are forbidden — replace with `->`, `=>`, `<-`, `<=`, `<->`, `...` per [forbidden-words.md](forbidden-words.md). Inside fenced code blocks and inline code spans they are allowed verbatim.
 
 ## Output Format
 
@@ -53,6 +54,7 @@ After rewriting, verify:
 - [ ] No emoji
 - [ ] No `---` separators in body (frontmatter only)
 - [ ] No AI / Claude / Anthropic / OpenAI watermark
+- [ ] No Unicode arrows (`→`, `⇒`, `↔`, etc.) or horizontal ellipsis (`…`) in body prose; ASCII equivalents only
 - [ ] Body byte count is 70-95% of original (or justified)
 - [ ] No paragraph longer than 6 sentences
 - [ ] YAML frontmatter parses
