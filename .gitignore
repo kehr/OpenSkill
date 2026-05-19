@@ -35,3 +35,7 @@ npm-debug.log*
 # Runtime data
 .openskill/
 /worksummary/output/
+
+# install --local outputs (per-project skill mirrors created by `openskill install --local`)
+/.claude/skills/
+/.joycode/

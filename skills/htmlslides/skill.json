@@ -1,0 +1,9 @@
+{
+  "name": "htmlslides",
+  "version": "0.1.0",
+  "description": "Generate single-file HTML presentation decks from a natural-language prompt, with optional PDF export via system Chrome",
+  "type": "skill",
+  "platforms": ["claude", "joycode"],
+  "render": ["SKILL.md", "specs/*.md", "references/*.md"],
+  "agents": []
+}

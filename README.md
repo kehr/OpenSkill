@@ -73,6 +73,8 @@ The `render` field in `skill.json` declares which files require Handlebars templ
 | Skill | Description |
 |-------|------|
 | worksummary | Work Summary automation for managers |
+| htmlslides | Generate single-file HTML presentation decks from a natural-language prompt, with optional PDF export via system Chrome |
+| blogpost-style | Rewrite Markdown blog posts into Anthropic or OpenAI Research engineering-blog voice |
 
 ## Development
 

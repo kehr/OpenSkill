@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>htmlslides example -- Bold Signal preset (10 slides)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Preset: Bold Signal ===== */
+    :root {
+      --bg: #0b1220;
+      --bg-elev: #131c30;
+      --fg: #f3f6ff;
+      --muted: #93a4c3;
+      --accent: #6ee7ff;
+      --accent-hot: #ff6abf;
+      --border: #1f2a44;
+      --font-display: "Space Grotesk", system-ui, sans-serif;
+      --font-body: "Inter Tight", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    }
+
+    /* viewport-base.css */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html {
+      font-size: clamp(14px, 1.1vw, 18px);
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(2rem, 5vw, 6rem);
+    }
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      line-height: 1.1;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    h1 { font-size: clamp(2.5rem, 6vw, 5.5rem); }
+    h2 { font-size: clamp(1.75rem, 4vw, 3.5rem); }
+    h3 { font-size: clamp(1.25rem, 2.5vw, 2rem); }
+    p { font-size: clamp(1rem, 1.5vw, 1.5rem); margin: 0.5em 0; }
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(1.1rem, 2vw, 1.75rem);
+      margin-top: 0.5em;
+      font-weight: 400;
+      max-width: 36em;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+      color: var(--accent);
+      margin-bottom: 1em;
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+    .slide-title { align-items: flex-start; }
+    .slide-bullets ul {
+      list-style: none;
+      padding: 0;
+      margin: clamp(1rem, 2vw, 2rem) 0 0 0;
+      display: grid;
+      gap: clamp(0.6rem, 1.2vw, 1.2rem);
+    }
+    .slide-bullets li {
+      font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+      padding-left: 1.8em;
+      position: relative;
+      line-height: 1.4;
+    }
+    .slide-bullets li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.7em;
+      height: 0.7em;
+      background: var(--accent);
+      border-radius: 2px;
+      transform: rotate(45deg);
+    }
+    .slide-two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 4vw, 5rem);
+      align-content: center;
+    }
+    .slide-two-column .col-stat {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      color: var(--accent);
+      line-height: 1;
+      font-weight: 700;
+    }
+    .slide-two-column .col-stat-label {
+      color: var(--muted);
+      font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-top: 0.4em;
+    }
+    .slide-feature-grid .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1rem, 2vw, 2rem);
+      margin-top: clamp(1.5rem, 2.5vw, 2.5rem);
+    }
+    .feature-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: clamp(1.2rem, 2vw, 2rem);
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--accent-hot);
+    }
+    .feature-card h3 { color: var(--accent); margin-bottom: 0.4em; }
+    .slide-quote { padding-left: clamp(3rem, 8vw, 10rem); }
+    .slide-quote blockquote {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 3rem);
+      line-height: 1.3;
+      margin: 0;
+      font-style: italic;
+      color: var(--accent);
+      max-width: 28ch;
+    }
+    .slide-quote cite {
+      display: block;
+      margin-top: 1.2em;
+      font-size: clamp(1rem, 1.3vw, 1.25rem);
+      color: var(--muted);
+      font-style: normal;
+    }
+    .slide-code pre {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: clamp(1rem, 1.6vw, 1.8rem);
+      overflow-x: auto;
+      font-size: clamp(0.85rem, 1.05vw, 1.05rem);
+      line-height: 1.5;
+    }
+    .slide-code code { font-family: var(--font-mono); color: var(--fg); }
+    .reveal, .reveal-scale, .reveal-blur {
+      opacity: 0;
+      transition: opacity 600ms ease-out, transform 600ms ease-out, filter 600ms ease-out;
+    }
+    .reveal { transform: translateY(20px); }
+    .reveal-scale { transform: scale(0.96); }
+    .reveal-blur { filter: blur(8px); }
+    .slide.visible .reveal,
+    .slide.visible .reveal-scale,
+    .slide.visible .reveal-blur {
+      opacity: 1; transform: none; filter: none;
+    }
+    .slide.visible [data-stagger="1"] { transition-delay: 80ms; }
+    .slide.visible [data-stagger="2"] { transition-delay: 160ms; }
+    .slide.visible [data-stagger="3"] { transition-delay: 240ms; }
+    .slide.visible [data-stagger="4"] { transition-delay: 320ms; }
+    .slide.visible [data-stagger="5"] { transition-delay: 400ms; }
+    .slide.visible [data-stagger="6"] { transition-delay: 480ms; }
+    .progress {
+      position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+      background: transparent; z-index: 100;
+    }
+    .progress-fill {
+      height: 100%; width: 0%; background: var(--accent);
+      transition: width 250ms ease-out;
+    }
+    .nav-dots {
+      position: fixed; right: clamp(0.8rem, 1.5vw, 1.5rem); top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: clamp(0.5rem, 0.8vw, 0.8rem);
+      z-index: 100;
+    }
+    .nav-dots button {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--muted); border: none; padding: 0;
+      opacity: 0.4; cursor: pointer;
+      transition: opacity 200ms ease-out, transform 200ms ease-out;
+    }
+    .nav-dots button.active { opacity: 1; transform: scale(1.4); background: var(--accent); }
+    @media (max-width: 700px) {
+      .slide-two-column { grid-template-columns: 1fr; gap: 1.5rem; }
+      .slide-feature-grid .grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-dots { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-scale, .reveal-blur { opacity: 1 !important; transform: none !important; filter: none !important; }
+    }
+
+    /* ----- Blackout / Whiteout overlay (B / W keys) ----- */
+    .blackout {
+      position: fixed; inset: 0; z-index: 200;
+      background: #000; pointer-events: none;
+      opacity: 0; transition: opacity 180ms ease-out;
+    }
+    .blackout[data-mode="black"] { opacity: 1; background: #000; }
+    .blackout[data-mode="white"] { opacity: 1; background: #fff; }
+
+    /* ----- Help overlay (? key) ----- */
+    .help-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(8, 12, 24, 0.78);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: clamp(1rem, 4vw, 3rem);
+    }
+    .help-overlay.show { display: flex; }
+    .help-card {
+      background: var(--bg-elev); color: var(--fg);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3.5rem);
+      max-width: min(640px, 92vw); font-family: var(--font-body);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+    .help-card h2 {
+      margin: 0 0 clamp(1rem, 1.6vw, 1.4rem) 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      font-weight: 600; color: var(--accent);
+    }
+    .help-card table {
+      width: 100%; border-collapse: collapse;
+      font-size: clamp(0.9rem, 1.1vw, 1.05rem); line-height: 1.5;
+    }
+    .help-card th, .help-card td {
+      text-align: left; padding: 0.45em 0;
+      border-bottom: 1px solid var(--border); font-weight: 400;
+    }
+    .help-card tr:last-child th, .help-card tr:last-child td { border-bottom: none; }
+    .help-card th { color: var(--muted); width: 50%; padding-right: 1.5em; }
+    .help-card td {
+      color: var(--fg); font-family: var(--font-mono);
+      font-size: 0.95em;
+    }
+    .help-card kbd {
+      display: inline-block; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.1em 0.45em; font-size: 0.85em; font-family: inherit;
+    }
+    .help-dismiss {
+      margin: clamp(0.8rem, 1.4vw, 1.2rem) 0 0 0;
+      font-size: clamp(0.8rem, 1vw, 0.95rem);
+      color: var(--muted); text-align: center;
+    }
+    @media print {
+      .blackout, .help-overlay { display: none !important; }
+    }
+
+    /* ===== Bold Signal signature elements ===== */
+    .title-bar {
+      width: 6px;
+      background: var(--accent-hot);
+      align-self: stretch;
+      margin-right: clamp(1rem, 2vw, 2rem);
+      flex-shrink: 0;
+    }
+    .with-bar {
+      display: flex;
+      align-items: stretch;
+    }
+    .slide-number {
+      position: absolute;
+      bottom: clamp(1rem, 2vw, 2rem);
+      right: clamp(1.5rem, 2.5vw, 3rem);
+      font-family: var(--font-mono);
+      font-size: clamp(0.75rem, 0.95vw, 0.95rem);
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+    .gradient-mesh {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 20% 30%, var(--accent) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, var(--accent-hot) 0%, transparent 40%);
+      opacity: 0.18;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+    .slide > *:not(.gradient-mesh):not(.slide-number) { position: relative; z-index: 1; }
+  </style>
+</head>
+<body>
+  <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+  <nav class="nav-dots" id="nav-dots" aria-label="Slide navigation"></nav>
+  <div class="blackout" id="blackout" data-mode="off" aria-hidden="true"></div>
+  <div class="help-overlay" id="help-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">
+    <div class="help-card">
+      <h2>Keyboard Shortcuts</h2>
+      <table>
+        <tr><th>Next slide</th><td>&rarr; &darr; Space PageDown</td></tr>
+        <tr><th>Previous slide</th><td>&larr; &uarr; Shift+Space PageUp</td></tr>
+        <tr><th>First / Last</th><td>Home / End</td></tr>
+        <tr><th>Jump to slide N</th><td>1 - 9 (0 = slide 10)</td></tr>
+        <tr><th>Fullscreen</th><td>F</td></tr>
+        <tr><th>Blackout / Whiteout</th><td>B / W (press again to restore)</td></tr>
+        <tr><th>Show this help</th><td>?</td></tr>
+        <tr><th>Close overlay / Exit</th><td>Esc</td></tr>
+      </table>
+      <p class="help-dismiss">Press <kbd>?</kbd> or <kbd>Esc</kbd> to close</p>
+    </div>
+  </div>
+
+  <section class="slide slide-title" data-slide="1">
+    <div class="gradient-mesh" aria-hidden="true"></div>
+    <div class="with-bar">
+      <div class="title-bar reveal" data-stagger="1"></div>
+      <div>
+        <p class="eyebrow reveal" data-stagger="2">Series A pitch</p>
+        <h1 class="reveal-blur" data-stagger="3">Memory that scales with the work, not the calendar.</h1>
+        <p class="subtitle reveal" data-stagger="4">RecallOS turns ambient laptop activity into a queryable workspace memory. Built for teams that ship knowledge, not status updates.</p>
+      </div>
+    </div>
+    <div class="slide-number">01 / 10</div>
+  </section>
+
+  <section class="slide slide-bullets" data-slide="2">
+    <p class="eyebrow reveal">Problem</p>
+    <h2 class="reveal" data-stagger="1">Knowledge work generates artifacts faster than people can index them.</h2>
+    <ul>
+      <li class="reveal" data-stagger="2">A typical engineer creates 200+ distinct artifacts per week (docs, comments, code, chats).</li>
+      <li class="reveal" data-stagger="3">87% are never read again by the author. 92% are never read by a teammate.</li>
+      <li class="reveal" data-stagger="4">Knowledge bases capture &lt; 4% of this -- the curated tip of the iceberg.</li>
+      <li class="reveal" data-stagger="5">Onboarding a new hire takes ~12 weeks because the rest lives in private chats and closed tabs.</li>
+    </ul>
+    <div class="slide-number">02 / 10</div>
+  </section>
+
+  <section class="slide slide-two-column" data-slide="3">
+    <div>
+      <p class="eyebrow reveal">Why now</p>
+      <h2 class="reveal" data-stagger="1">Three forces converged in the last 18 months.</h2>
+      <p class="reveal" data-stagger="2" style="color: var(--muted); max-width: 30em; margin-top: 1.2em;">Local-first AI, cheap vector storage on consumer machines, and a workforce that lives across 12+ SaaS tools have made workspace memory both technically feasible and economically necessary.</p>
+    </div>
+    <div>
+      <div class="reveal-scale" data-stagger="1">
+        <div class="col-stat">12x</div>
+        <div class="col-stat-label">drop in embedding cost since 2023</div>
+      </div>
+      <div class="reveal-scale" data-stagger="2" style="margin-top: 2rem;">
+        <div class="col-stat">68%</div>
+        <div class="col-stat-label">of workers use 10+ SaaS tools daily</div>
+      </div>
+      <div class="reveal-scale" data-stagger="3" style="margin-top: 2rem;">
+        <div class="col-stat">$0.04</div>
+        <div class="col-stat-label">marginal cost to index a workday</div>
+      </div>
+    </div>
+    <div class="slide-number">03 / 10</div>
+  </section>
+
+  <section class="slide slide-feature-grid" data-slide="4">
+    <p class="eyebrow reveal">Solution</p>
+    <h2 class="reveal" data-stagger="1">RecallOS in three layers.</h2>
+    <div class="grid">
+      <div class="feature-card reveal" data-stagger="2">
+        <h3>Capture</h3>
+        <p>Local OS-level hooks observe app windows, clipboards, and authorized API streams. Nothing leaves the machine without consent.</p>
+      </div>
+      <div class="feature-card reveal" data-stagger="3">
+        <h3>Index</h3>
+        <p>Encrypted local vector store, indexed in 200-token chunks with cross-document linkage. Median query latency: 80ms.</p>
+      </div>
+      <div class="feature-card reveal" data-stagger="4">
+        <h3>Recall</h3>
+        <p>Native search bar + IDE plugin + chat sidebar. One query surfaces the artifact, its context, and its history.</p>
+      </div>
+    </div>
+    <div class="slide-number">04 / 10</div>
+  </section>
+
+  <section class="slide slide-code" data-slide="5">
+    <p class="eyebrow reveal">How it feels in practice</p>
+    <h2 class="reveal" data-stagger="1">Query language is plain English (with optional filters).</h2>
+    <pre class="reveal-blur" data-stagger="2"><code>$ recall "the doc about rate limiting we wrote in Q1"
+[1] policy/rate-limit-design.md             March 8   you, @dana
+[2] design-review notes                      March 12  Notion
+[3] PR #4112 retry-with-backoff              March 15  GitHub
+
+$ recall --since="last week" --kind=conversation \
+         "what did we decide about the egress webhook?"
+[1] #eng-platform 2026-05-12 14:31 (Dana, You, Sasha)
+    "Lets ship it disabled by default. Flag flip next sprint."
+
+$ recall --visualize "everything I touched related to billing in May"</code></pre>
+    <div class="slide-number">05 / 10</div>
+  </section>
+
+  <section class="slide slide-quote" data-slide="6">
+    <p class="eyebrow reveal">Early customer</p>
+    <blockquote class="reveal-blur" data-stagger="1">RecallOS replaced four sticky-note systems and one Notion graveyard. I haven't said "where did we put that" in six weeks.</blockquote>
+    <cite class="reveal" data-stagger="2">-- Sasha Lin, Head of Engineering, Vellum (40 engineers, beta since March)</cite>
+    <div class="slide-number">06 / 10</div>
+  </section>
+
+  <section class="slide slide-bullets" data-slide="7">
+    <p class="eyebrow reveal">Traction</p>
+    <h2 class="reveal" data-stagger="1">Six months in beta.</h2>
+    <ul>
+      <li class="reveal" data-stagger="2">12 paying design partners, 280 seats. ARR run rate $440k as of last week.</li>
+      <li class="reveal" data-stagger="3">D30 retention 71%, D90 retention 62% -- above benchmarks for tools-in-the-flow.</li>
+      <li class="reveal" data-stagger="4">NPS 54 across paying users. Most-cited driver: "feels like cheating during code review."</li>
+      <li class="reveal" data-stagger="5">Waitlist: 4,200 seats across 180 companies, growing ~30%/week.</li>
+    </ul>
+    <div class="slide-number">07 / 10</div>
+  </section>
+
+  <section class="slide slide-feature-grid" data-slide="8">
+    <p class="eyebrow reveal">Why the team</p>
+    <h2 class="reveal" data-stagger="1">Three founders, three distinct hard problems already solved together.</h2>
+    <div class="grid">
+      <div class="feature-card reveal" data-stagger="2">
+        <h3>Dana K.</h3>
+        <p>Ex-staff at Notion, led the workspace search rewrite. Knows where this gets hard at scale.</p>
+      </div>
+      <div class="feature-card reveal" data-stagger="3">
+        <h3>Riku M.</h3>
+        <p>Built on-device ML at Apple for four years. Cares deeply about local-first and privacy.</p>
+      </div>
+      <div class="feature-card reveal" data-stagger="4">
+        <h3>Olu A.</h3>
+        <p>Founded a previous infra startup (exit, 2022). The "ship it" person -- second time at this.</p>
+      </div>
+    </div>
+    <div class="slide-number">08 / 10</div>
+  </section>
+
+  <section class="slide slide-two-column" data-slide="9">
+    <div>
+      <p class="eyebrow reveal">The ask</p>
+      <h2 class="reveal" data-stagger="1">$8M Series A.</h2>
+      <p class="reveal" data-stagger="2" style="color: var(--muted); max-width: 32em; margin-top: 1.2em;">18 months of runway. Hires concentrated in retrieval quality, IDE/editor integrations, and enterprise security review. Plan to be EBITDA-neutral by Q3 next year on existing seat economics.</p>
+    </div>
+    <div>
+      <div class="reveal" data-stagger="1">
+        <div class="col-stat">$8M</div>
+        <div class="col-stat-label">Series A target</div>
+      </div>
+      <div class="reveal" data-stagger="2" style="margin-top: 2rem;">
+        <div class="col-stat">18 mo</div>
+        <div class="col-stat-label">Runway</div>
+      </div>
+      <div class="reveal" data-stagger="3" style="margin-top: 2rem;">
+        <div class="col-stat">9 hires</div>
+        <div class="col-stat-label">Eng + GTM</div>
+      </div>
+    </div>
+    <div class="slide-number">09 / 10</div>
+  </section>
+
+  <section class="slide slide-title" data-slide="10">
+    <div class="gradient-mesh" aria-hidden="true"></div>
+    <div class="with-bar">
+      <div class="title-bar reveal" data-stagger="1"></div>
+      <div>
+        <p class="eyebrow reveal" data-stagger="2">Next steps</p>
+        <h1 class="reveal-blur" data-stagger="3">Let's keep going.</h1>
+        <p class="subtitle reveal" data-stagger="4">Demo on the next call. Open to questions ahead of time at founders@recallos.io.</p>
+      </div>
+    </div>
+    <div class="slide-number">10 / 10</div>
+  </section>
+
+  <script>
+    class SlidePresentation {
+      constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.activeIndex = 0;
+        this.progressFill = document.getElementById('progress-fill');
+        this.navContainer = document.getElementById('nav-dots');
+        this.wheelLocked = false;
+        this.blackout = document.getElementById('blackout');
+        this.helpOverlay = document.getElementById('help-overlay');
+        this.setupNavDots();
+        this.setupIntersectionObserver();
+        this.setupKeyboard();
+        this.setupTouch();
+        this.setupWheel();
+        this.setupHelpDismissOnClick();
+        this.updateProgress();
+        if (this.slides[0]) this.slides[0].classList.add('visible');
+      }
+      setupNavDots() {
+        if (!this.navContainer) return;
+        this.navContainer.innerHTML = '';
+        this.slides.forEach((_, i) => {
+          const btn = document.createElement('button');
+          btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+          if (i === 0) btn.classList.add('active');
+          btn.addEventListener('click', () => this.goToSlide(i));
+          this.navContainer.appendChild(btn);
+        });
+      }
+      setupIntersectionObserver() {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              const idx = this.slides.indexOf(entry.target);
+              if (idx >= 0) {
+                this.activeIndex = idx;
+                this.updateActiveDot();
+                this.updateProgress();
+              }
+            }
+          });
+        }, { threshold: 0.55 });
+        this.slides.forEach((s) => io.observe(s));
+      }
+      setupKeyboard() {
+        document.addEventListener('keydown', (e) => {
+          const tag = (e.target && e.target.tagName) || '';
+          if (e.target && e.target.isContentEditable) return;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+          if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+            e.preventDefault(); this.toggleHelp(); return;
+          }
+          if (e.key === 'Escape') {
+            if (this.helpOverlay && this.helpOverlay.classList.contains('show')) {
+              e.preventDefault(); this.toggleHelp(false); return;
+            }
+            if (this.blackout && this.blackout.dataset.mode !== 'off') {
+              e.preventDefault(); this.setBlackout('off'); return;
+            }
+            if (document.fullscreenElement) {
+              e.preventDefault(); document.exitFullscreen().catch(() => {}); return;
+            }
+            return;
+          }
+          if (this.helpOverlay && this.helpOverlay.classList.contains('show')) return;
+
+          if (e.key === 'f' || e.key === 'F') { e.preventDefault(); this.toggleFullscreen(); return; }
+          if (e.key === 'b' || e.key === 'B') { e.preventDefault(); this.toggleBlackout('black'); return; }
+          if (e.key === 'w' || e.key === 'W') { e.preventDefault(); this.toggleBlackout('white'); return; }
+
+          if (/^[0-9]$/.test(e.key)) {
+            const target = e.key === '0' ? 9 : parseInt(e.key, 10) - 1;
+            if (target >= 0 && target < this.slides.length) {
+              e.preventDefault(); this.goToSlide(target);
+            }
+            return;
+          }
+
+          if (e.key === ' ' && e.shiftKey) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); return; }
+
+          const nextKeys = ['ArrowDown', 'ArrowRight', 'PageDown', ' '];
+          const prevKeys = ['ArrowUp', 'ArrowLeft', 'PageUp'];
+          if (nextKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex + 1); }
+          else if (prevKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); }
+          else if (e.key === 'Home') { e.preventDefault(); this.goToSlide(0); }
+          else if (e.key === 'End') { e.preventDefault(); this.goToSlide(this.slides.length - 1); }
+        });
+      }
+      toggleFullscreen() {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else document.documentElement.requestFullscreen().catch(() => {});
+      }
+      toggleBlackout(mode) {
+        if (!this.blackout) return;
+        const current = this.blackout.dataset.mode;
+        this.setBlackout(current === mode ? 'off' : mode);
+      }
+      setBlackout(mode) {
+        if (!this.blackout) return;
+        this.blackout.dataset.mode = mode;
+        this.blackout.setAttribute('aria-hidden', mode === 'off' ? 'true' : 'false');
+      }
+      toggleHelp(force) {
+        if (!this.helpOverlay) return;
+        const next = (typeof force === 'boolean') ? force : !this.helpOverlay.classList.contains('show');
+        this.helpOverlay.classList.toggle('show', next);
+        this.helpOverlay.setAttribute('aria-hidden', next ? 'false' : 'true');
+      }
+      setupHelpDismissOnClick() {
+        if (!this.helpOverlay) return;
+        this.helpOverlay.addEventListener('click', (e) => {
+          if (e.target === this.helpOverlay) this.toggleHelp(false);
+        });
+      }
+      setupTouch() {
+        let startY = 0;
+        document.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+          const dy = e.changedTouches[0].clientY - startY;
+          if (Math.abs(dy) < 40) return;
+          this.goToSlide(this.activeIndex + (dy < 0 ? 1 : -1));
+        }, { passive: true });
+      }
+      setupWheel() {
+        document.addEventListener('wheel', (e) => {
+          if (this.wheelLocked) return;
+          if (Math.abs(e.deltaY) < 30) return;
+          this.wheelLocked = true;
+          this.goToSlide(this.activeIndex + (e.deltaY > 0 ? 1 : -1));
+          setTimeout(() => { this.wheelLocked = false; }, 700);
+        }, { passive: true });
+      }
+      goToSlide(index) {
+        const clamped = Math.max(0, Math.min(this.slides.length - 1, index));
+        this.slides[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      updateActiveDot() {
+        if (!this.navContainer) return;
+        Array.from(this.navContainer.children).forEach((btn, i) => {
+          btn.classList.toggle('active', i === this.activeIndex);
+        });
+      }
+      updateProgress() {
+        if (!this.progressFill) return;
+        const pct = (this.activeIndex / Math.max(1, this.slides.length - 1)) * 100;
+        this.progressFill.style.width = pct + '%';
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      window.presentation = new SlidePresentation();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,401 @@
+/* viewport-base.css */
+/* This file is inlined verbatim into the generated HTML's <style> block.
+   It defines the locked-in slide model: viewport-locked sections, scroll-snap
+   pagination, reveal animation base, and responsive scaling.
+   The chosen preset's :root block overrides --bg / --fg / --accent / fonts. */
+
+/* ----- Universal reset ----- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+html {
+  font-size: clamp(14px, 1.1vw, 18px);
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ----- Slide container ----- */
+
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 6rem);
+}
+
+/* ----- Type scale ----- */
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.1;
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: clamp(2.5rem, 6vw, 5.5rem); }
+h2 { font-size: clamp(1.75rem, 4vw, 3.5rem); }
+h3 { font-size: clamp(1.25rem, 2.5vw, 2rem); }
+p  { font-size: clamp(1rem, 1.5vw, 1.5rem); margin: 0.5em 0; }
+
+.subtitle {
+  color: var(--muted);
+  font-size: clamp(1.1rem, 2vw, 1.75rem);
+  margin-top: 0.5em;
+  font-weight: 400;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+  color: var(--muted);
+  margin-bottom: 1em;
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* ----- Layout helpers ----- */
+
+.slide-title {
+  align-items: flex-start;
+}
+
+.slide-bullets ul {
+  list-style: none;
+  padding: 0;
+  margin: clamp(1rem, 2vw, 2rem) 0 0 0;
+  display: grid;
+  gap: clamp(0.6rem, 1.2vw, 1.2rem);
+}
+
+.slide-bullets li {
+  font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+  padding-left: 1.5em;
+  position: relative;
+  line-height: 1.4;
+}
+
+.slide-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.6em;
+  height: 0.6em;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.slide-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 4vw, 5rem);
+  align-content: center;
+}
+
+.slide-feature-grid .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2vw, 2rem);
+  margin-top: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+.feature-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(1.2rem, 2vw, 2rem);
+}
+
+.feature-card h3 {
+  color: var(--accent);
+  margin-bottom: 0.4em;
+}
+
+.slide-quote blockquote {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 3rem);
+  line-height: 1.3;
+  margin: 0;
+  font-style: italic;
+}
+
+.slide-quote cite {
+  display: block;
+  margin-top: 1.2em;
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  color: var(--muted);
+  font-style: normal;
+}
+
+.slide-code pre {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: clamp(1rem, 1.6vw, 1.8rem);
+  overflow-x: auto;
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  line-height: 1.5;
+}
+
+.slide-code code {
+  font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+  color: var(--fg);
+}
+
+.slide-image img {
+  max-width: 100%;
+  max-height: 70vh;
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
+}
+
+.slide-image figcaption {
+  text-align: center;
+  margin-top: 1em;
+  color: var(--muted);
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+}
+
+/* ----- Reveal animations ----- */
+
+.reveal,
+.reveal-scale,
+.reveal-left,
+.reveal-blur {
+  opacity: 0;
+  transition: opacity 600ms ease-out, transform 600ms ease-out, filter 600ms ease-out;
+}
+
+.reveal       { transform: translateY(20px); }
+.reveal-scale { transform: scale(0.96); }
+.reveal-left  { transform: translateX(-24px); }
+.reveal-blur  { filter: blur(8px); }
+
+.slide.visible .reveal,
+.slide.visible .reveal-scale,
+.slide.visible .reveal-left,
+.slide.visible .reveal-blur {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Staggered child reveal -- delay by data-stagger attribute, capped at 6 */
+.slide.visible [data-stagger="1"] { transition-delay: 80ms; }
+.slide.visible [data-stagger="2"] { transition-delay: 160ms; }
+.slide.visible [data-stagger="3"] { transition-delay: 240ms; }
+.slide.visible [data-stagger="4"] { transition-delay: 320ms; }
+.slide.visible [data-stagger="5"] { transition-delay: 400ms; }
+.slide.visible [data-stagger="6"] { transition-delay: 480ms; }
+
+/* ----- Progress bar + nav dots ----- */
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  z-index: 100;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width 250ms ease-out;
+}
+
+.nav-dots {
+  position: fixed;
+  right: clamp(0.8rem, 1.5vw, 1.5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 0.8vw, 0.8rem);
+  z-index: 100;
+}
+
+.nav-dots button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  border: none;
+  padding: 0;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.nav-dots button.active {
+  opacity: 1;
+  transform: scale(1.4);
+  background: var(--accent);
+}
+
+.nav-dots button:hover {
+  opacity: 0.8;
+}
+
+/* ----- Blackout / Whiteout overlay (B / W keys) ----- */
+
+.blackout {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}
+
+.blackout[data-mode="black"] { opacity: 1; background: #000; }
+.blackout[data-mode="white"] { opacity: 1; background: #fff; }
+
+/* ----- Help overlay (? key) ----- */
+
+.help-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(8, 12, 24, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.help-overlay.show { display: flex; }
+
+.help-card {
+  background: var(--bg-elev, #1a1f2e);
+  color: var(--fg, #f3f6ff);
+  border: 1px solid var(--border, #303a55);
+  border-radius: 14px;
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3.5rem);
+  max-width: min(640px, 92vw);
+  font-family: var(--font-body, system-ui, sans-serif);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.help-card h2 {
+  margin: 0 0 clamp(1rem, 1.6vw, 1.4rem) 0;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 600;
+  color: var(--accent, #6ee7ff);
+}
+
+.help-card table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  line-height: 1.5;
+}
+
+.help-card th,
+.help-card td {
+  text-align: left;
+  padding: 0.45em 0;
+  border-bottom: 1px solid var(--border, #303a55);
+  font-weight: 400;
+}
+
+.help-card tr:last-child th,
+.help-card tr:last-child td {
+  border-bottom: none;
+}
+
+.help-card th {
+  color: var(--muted, #93a4c3);
+  width: 50%;
+  padding-right: 1.5em;
+}
+
+.help-card td {
+  color: var(--fg, #f3f6ff);
+  font-family: var(--font-mono, "JetBrains Mono", "SF Mono", Menlo, monospace);
+  font-size: 0.95em;
+}
+
+.help-card kbd {
+  display: inline-block;
+  background: var(--bg, #0b1220);
+  border: 1px solid var(--border, #303a55);
+  border-radius: 4px;
+  padding: 0.1em 0.45em;
+  font-size: 0.85em;
+  font-family: inherit;
+}
+
+.help-dismiss {
+  margin: clamp(0.8rem, 1.4vw, 1.2rem) 0 0 0;
+  font-size: clamp(0.8rem, 1vw, 0.95rem);
+  color: var(--muted, #93a4c3);
+  text-align: center;
+}
+
+/* ----- Responsive (smaller screens) ----- */
+
+@media (max-height: 700px) {
+  .slide { padding: clamp(1.5rem, 4vw, 3rem); }
+}
+
+@media (max-width: 700px) {
+  .slide-two-column { grid-template-columns: 1fr; gap: 1.5rem; }
+  .slide-feature-grid .grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-dots { display: none; }
+}
+
+@media (max-width: 480px) {
+  .slide-feature-grid .grid { grid-template-columns: 1fr; }
+}
+
+/* ----- Print (Cmd+P fallback) ----- */
+
+@media print {
+  html { scroll-snap-type: none; overflow: visible; }
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    page-break-after: always;
+    page-break-inside: avoid;
+  }
+  .slide:last-child { page-break-after: auto; }
+  .progress, .nav-dots, .blackout, .help-overlay { display: none !important; }
+  /* Force reveal final state for print */
+  .reveal, .reveal-scale, .reveal-left, .reveal-blur {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}

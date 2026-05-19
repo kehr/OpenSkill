@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>htmlslides example -- Notebook Tabs preset (5 slides)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== Preset: Notebook Tabs ===== */
+    :root {
+      --bg: #f7f1e3;
+      --bg-elev: #fbf6e8;
+      --fg: #2c2517;
+      --muted: #6b5d44;
+      --accent: #b94a3c;
+      --accent-hot: #2f6b50;
+      --border: #d9cdb0;
+      --font-display: "Fraunces", "Times New Roman", serif;
+      --font-body: "Source Serif 4", Georgia, serif;
+    }
+
+    /* viewport-base.css */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html {
+      font-size: clamp(14px, 1.1vw, 18px);
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(2rem, 5vw, 6rem);
+    }
+    h1, h2, h3 {
+      font-family: var(--font-display);
+      line-height: 1.1;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    h1 { font-size: clamp(2.5rem, 6vw, 5.5rem); }
+    h2 { font-size: clamp(1.75rem, 4vw, 3.5rem); }
+    h3 { font-size: clamp(1.25rem, 2.5vw, 2rem); }
+    p { font-size: clamp(1rem, 1.5vw, 1.5rem); margin: 0.5em 0; }
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(1.1rem, 2vw, 1.75rem);
+      margin-top: 0.5em;
+      font-weight: 400;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+      color: var(--muted);
+      margin-bottom: 1em;
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+    .slide-title { align-items: flex-start; }
+    .slide-bullets ul {
+      list-style: none;
+      padding: 0;
+      margin: clamp(1rem, 2vw, 2rem) 0 0 0;
+      display: grid;
+      gap: clamp(0.6rem, 1.2vw, 1.2rem);
+    }
+    .slide-bullets li {
+      font-size: clamp(1.1rem, 1.7vw, 1.6rem);
+      padding-left: 1.5em;
+      position: relative;
+      line-height: 1.4;
+    }
+    .slide-bullets li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.6em;
+      height: 0.6em;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .slide-feature-grid .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1rem, 2vw, 2rem);
+      margin-top: clamp(1.5rem, 2.5vw, 2.5rem);
+    }
+    .feature-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: clamp(1.2rem, 2vw, 2rem);
+    }
+    .feature-card h3 { color: var(--accent); margin-bottom: 0.4em; }
+    .slide-quote blockquote {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 3rem);
+      line-height: 1.3;
+      margin: 0;
+      font-style: italic;
+    }
+    .slide-quote cite {
+      display: block;
+      margin-top: 1.2em;
+      font-size: clamp(1rem, 1.3vw, 1.25rem);
+      color: var(--muted);
+      font-style: normal;
+    }
+    .reveal, .reveal-left {
+      opacity: 0;
+      transition: opacity 600ms ease-out, transform 600ms ease-out;
+    }
+    .reveal { transform: translateY(20px); }
+    .reveal-left { transform: translateX(-24px); }
+    .slide.visible .reveal, .slide.visible .reveal-left { opacity: 1; transform: none; }
+    .slide.visible [data-stagger="1"] { transition-delay: 80ms; }
+    .slide.visible [data-stagger="2"] { transition-delay: 160ms; }
+    .slide.visible [data-stagger="3"] { transition-delay: 240ms; }
+    .slide.visible [data-stagger="4"] { transition-delay: 320ms; }
+    .progress {
+      position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+      background: transparent; z-index: 100;
+    }
+    .progress-fill {
+      height: 100%; width: 0%; background: var(--accent);
+      transition: width 250ms ease-out;
+    }
+    .nav-dots {
+      position: fixed; right: clamp(0.8rem, 1.5vw, 1.5rem); top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: clamp(0.5rem, 0.8vw, 0.8rem);
+      z-index: 100;
+    }
+    .nav-dots button {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--muted); border: none; padding: 0;
+      opacity: 0.4; cursor: pointer;
+      transition: opacity 200ms ease-out, transform 200ms ease-out;
+    }
+    .nav-dots button.active { opacity: 1; transform: scale(1.4); background: var(--accent); }
+    @media (max-width: 700px) {
+      .slide-feature-grid .grid { grid-template-columns: repeat(2, 1fr); }
+      .nav-dots { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-left { opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ----- Blackout / Whiteout overlay (B / W keys) ----- */
+    .blackout {
+      position: fixed; inset: 0; z-index: 200;
+      background: #000; pointer-events: none;
+      opacity: 0; transition: opacity 180ms ease-out;
+    }
+    .blackout[data-mode="black"] { opacity: 1; background: #000; }
+    .blackout[data-mode="white"] { opacity: 1; background: #fff; }
+
+    /* ----- Help overlay (? key) ----- */
+    .help-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(8, 12, 24, 0.78);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: clamp(1rem, 4vw, 3rem);
+    }
+    .help-overlay.show { display: flex; }
+    .help-card {
+      background: var(--bg-elev); color: var(--fg);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3.5rem);
+      max-width: min(640px, 92vw); font-family: var(--font-body);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+    .help-card h2 {
+      margin: 0 0 clamp(1rem, 1.6vw, 1.4rem) 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      font-weight: 600; color: var(--accent);
+    }
+    .help-card table {
+      width: 100%; border-collapse: collapse;
+      font-size: clamp(0.9rem, 1.1vw, 1.05rem); line-height: 1.5;
+    }
+    .help-card th, .help-card td {
+      text-align: left; padding: 0.45em 0;
+      border-bottom: 1px solid var(--border); font-weight: 400;
+    }
+    .help-card tr:last-child th, .help-card tr:last-child td { border-bottom: none; }
+    .help-card th { color: var(--muted); width: 50%; padding-right: 1.5em; }
+    .help-card td {
+      color: var(--fg);
+      font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+      font-size: 0.95em;
+    }
+    .help-card kbd {
+      display: inline-block; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.1em 0.45em; font-size: 0.85em; font-family: inherit;
+    }
+    .help-dismiss {
+      margin: clamp(0.8rem, 1.4vw, 1.2rem) 0 0 0;
+      font-size: clamp(0.8rem, 1vw, 0.95rem);
+      color: var(--muted); text-align: center;
+    }
+    @media print {
+      .blackout, .help-overlay { display: none !important; }
+    }
+
+    /* ===== Notebook Tabs signature elements ===== */
+    .tab-strip {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: clamp(2rem, 3vw, 3.5rem);
+      display: flex; flex-direction: column;
+      align-items: flex-start;
+    }
+    .tab-strip > div {
+      width: 100%;
+      flex: 1;
+      border-left: 1px solid var(--border);
+      writing-mode: vertical-rl;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem 0;
+      font-family: var(--font-body);
+      font-size: clamp(0.7rem, 0.85vw, 0.85rem);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+    .tab-strip > div.active {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .binder-holes {
+      position: absolute;
+      left: clamp(0.6rem, 1vw, 1.2rem);
+      top: 0; bottom: 0;
+      display: flex; flex-direction: column;
+      justify-content: space-around;
+      padding: 4rem 0;
+      pointer-events: none;
+    }
+    .binder-holes > span {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--border);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.18);
+    }
+    .underline-hand {
+      box-shadow: 0 0.4em 0 -0.3em var(--accent);
+      display: inline;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+  <nav class="nav-dots" id="nav-dots" aria-label="Slide navigation"></nav>
+  <div class="blackout" id="blackout" data-mode="off" aria-hidden="true"></div>
+  <div class="help-overlay" id="help-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">
+    <div class="help-card">
+      <h2>Keyboard Shortcuts</h2>
+      <table>
+        <tr><th>Next slide</th><td>&rarr; &darr; Space PageDown</td></tr>
+        <tr><th>Previous slide</th><td>&larr; &uarr; Shift+Space PageUp</td></tr>
+        <tr><th>First / Last</th><td>Home / End</td></tr>
+        <tr><th>Jump to slide N</th><td>1 - 9 (0 = slide 10)</td></tr>
+        <tr><th>Fullscreen</th><td>F</td></tr>
+        <tr><th>Blackout / Whiteout</th><td>B / W (press again to restore)</td></tr>
+        <tr><th>Show this help</th><td>?</td></tr>
+        <tr><th>Close overlay / Exit</th><td>Esc</td></tr>
+      </table>
+      <p class="help-dismiss">Press <kbd>?</kbd> or <kbd>Esc</kbd> to close</p>
+    </div>
+  </div>
+
+  <section class="slide slide-title" data-slide="1">
+    <div class="binder-holes" aria-hidden="true"><span></span><span></span><span></span></div>
+    <p class="eyebrow reveal" data-stagger="1">An htmlslides example</p>
+    <h1 class="reveal" data-stagger="2"><span class="underline-hand">A weekend</span> with a paper notebook.</h1>
+    <p class="subtitle reveal" data-stagger="3">Five slides on what changed when I left my laptop closed and used a fountain pen for three days.</p>
+    <div class="tab-strip" aria-hidden="true">
+      <div class="active">Intro</div>
+      <div>Setup</div>
+      <div>Notes</div>
+      <div>Quote</div>
+      <div>Outcome</div>
+    </div>
+  </section>
+
+  <section class="slide slide-bullets" data-slide="2">
+    <p class="eyebrow reveal">Setup</p>
+    <h2 class="reveal">What I changed</h2>
+    <ul>
+      <li class="reveal" data-stagger="1">Laptop in another room, all notifications off.</li>
+      <li class="reveal" data-stagger="2">One A5 notebook, one fountain pen, one ink bottle.</li>
+      <li class="reveal" data-stagger="3">No structured planner -- only blank pages.</li>
+      <li class="reveal" data-stagger="4">A small kitchen timer set to 50 minutes per session.</li>
+    </ul>
+    <div class="tab-strip" aria-hidden="true">
+      <div>Intro</div>
+      <div class="active">Setup</div>
+      <div>Notes</div>
+      <div>Quote</div>
+      <div>Outcome</div>
+    </div>
+  </section>
+
+  <section class="slide slide-feature-grid" data-slide="3">
+    <p class="eyebrow reveal">Notes I kept</p>
+    <h2 class="reveal">Three kinds of pages</h2>
+    <div class="grid">
+      <div class="feature-card reveal" data-stagger="1">
+        <h3>Morning</h3>
+        <p>Stream of consciousness, no editing. Page filled in 18 minutes on average.</p>
+      </div>
+      <div class="feature-card reveal" data-stagger="2">
+        <h3>Working</h3>
+        <p>Lists and diagrams. Far slower than typed -- but I remembered what was on them.</p>
+      </div>
+      <div class="feature-card reveal" data-stagger="3">
+        <h3>Evening</h3>
+        <p>One paragraph summarizing the day. Honest because it was for me.</p>
+      </div>
+    </div>
+    <div class="tab-strip" aria-hidden="true">
+      <div>Intro</div>
+      <div>Setup</div>
+      <div class="active">Notes</div>
+      <div>Quote</div>
+      <div>Outcome</div>
+    </div>
+  </section>
+
+  <section class="slide slide-quote" data-slide="4">
+    <blockquote class="reveal">Writing by hand forced me to choose what to write. The screen never asked me to.</blockquote>
+    <cite class="reveal" data-stagger="1">-- Notebook, page 31</cite>
+    <div class="tab-strip" aria-hidden="true">
+      <div>Intro</div>
+      <div>Setup</div>
+      <div>Notes</div>
+      <div class="active">Quote</div>
+      <div>Outcome</div>
+    </div>
+  </section>
+
+  <section class="slide slide-bullets" data-slide="5">
+    <p class="eyebrow reveal">Outcome</p>
+    <h2 class="reveal">What I'd keep</h2>
+    <ul>
+      <li class="reveal" data-stagger="1">The morning stream-of-consciousness page -- the highest-signal habit.</li>
+      <li class="reveal" data-stagger="2">A 50-minute timer per focused session, regardless of medium.</li>
+      <li class="reveal" data-stagger="3">Evening one-paragraph summary, even if typed.</li>
+      <li class="reveal" data-stagger="4">Phone in another room, not just on silent.</li>
+    </ul>
+    <div class="tab-strip" aria-hidden="true">
+      <div>Intro</div>
+      <div>Setup</div>
+      <div>Notes</div>
+      <div>Quote</div>
+      <div class="active">Outcome</div>
+    </div>
+  </section>
+
+  <script>
+    class SlidePresentation {
+      constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.activeIndex = 0;
+        this.progressFill = document.getElementById('progress-fill');
+        this.navContainer = document.getElementById('nav-dots');
+        this.wheelLocked = false;
+        this.blackout = document.getElementById('blackout');
+        this.helpOverlay = document.getElementById('help-overlay');
+        this.setupNavDots();
+        this.setupIntersectionObserver();
+        this.setupKeyboard();
+        this.setupTouch();
+        this.setupWheel();
+        this.setupHelpDismissOnClick();
+        this.updateProgress();
+        if (this.slides[0]) this.slides[0].classList.add('visible');
+      }
+      setupNavDots() {
+        if (!this.navContainer) return;
+        this.navContainer.innerHTML = '';
+        this.slides.forEach((_, i) => {
+          const btn = document.createElement('button');
+          btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+          if (i === 0) btn.classList.add('active');
+          btn.addEventListener('click', () => this.goToSlide(i));
+          this.navContainer.appendChild(btn);
+        });
+      }
+      setupIntersectionObserver() {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              const idx = this.slides.indexOf(entry.target);
+              if (idx >= 0) {
+                this.activeIndex = idx;
+                this.updateActiveDot();
+                this.updateProgress();
+              }
+            }
+          });
+        }, { threshold: 0.55 });
+        this.slides.forEach((s) => io.observe(s));
+      }
+      setupKeyboard() {
+        document.addEventListener('keydown', (e) => {
+          const tag = (e.target && e.target.tagName) || '';
+          if (e.target && e.target.isContentEditable) return;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+          if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+            e.preventDefault(); this.toggleHelp(); return;
+          }
+          if (e.key === 'Escape') {
+            if (this.helpOverlay && this.helpOverlay.classList.contains('show')) {
+              e.preventDefault(); this.toggleHelp(false); return;
+            }
+            if (this.blackout && this.blackout.dataset.mode !== 'off') {
+              e.preventDefault(); this.setBlackout('off'); return;
+            }
+            if (document.fullscreenElement) {
+              e.preventDefault(); document.exitFullscreen().catch(() => {}); return;
+            }
+            return;
+          }
+          if (this.helpOverlay && this.helpOverlay.classList.contains('show')) return;
+
+          if (e.key === 'f' || e.key === 'F') { e.preventDefault(); this.toggleFullscreen(); return; }
+          if (e.key === 'b' || e.key === 'B') { e.preventDefault(); this.toggleBlackout('black'); return; }
+          if (e.key === 'w' || e.key === 'W') { e.preventDefault(); this.toggleBlackout('white'); return; }
+
+          if (/^[0-9]$/.test(e.key)) {
+            const target = e.key === '0' ? 9 : parseInt(e.key, 10) - 1;
+            if (target >= 0 && target < this.slides.length) {
+              e.preventDefault(); this.goToSlide(target);
+            }
+            return;
+          }
+
+          if (e.key === ' ' && e.shiftKey) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); return; }
+
+          const nextKeys = ['ArrowDown', 'ArrowRight', 'PageDown', ' '];
+          const prevKeys = ['ArrowUp', 'ArrowLeft', 'PageUp'];
+          if (nextKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex + 1); }
+          else if (prevKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); }
+          else if (e.key === 'Home') { e.preventDefault(); this.goToSlide(0); }
+          else if (e.key === 'End') { e.preventDefault(); this.goToSlide(this.slides.length - 1); }
+        });
+      }
+      toggleFullscreen() {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else document.documentElement.requestFullscreen().catch(() => {});
+      }
+      toggleBlackout(mode) {
+        if (!this.blackout) return;
+        const current = this.blackout.dataset.mode;
+        this.setBlackout(current === mode ? 'off' : mode);
+      }
+      setBlackout(mode) {
+        if (!this.blackout) return;
+        this.blackout.dataset.mode = mode;
+        this.blackout.setAttribute('aria-hidden', mode === 'off' ? 'true' : 'false');
+      }
+      toggleHelp(force) {
+        if (!this.helpOverlay) return;
+        const next = (typeof force === 'boolean') ? force : !this.helpOverlay.classList.contains('show');
+        this.helpOverlay.classList.toggle('show', next);
+        this.helpOverlay.setAttribute('aria-hidden', next ? 'false' : 'true');
+      }
+      setupHelpDismissOnClick() {
+        if (!this.helpOverlay) return;
+        this.helpOverlay.addEventListener('click', (e) => {
+          if (e.target === this.helpOverlay) this.toggleHelp(false);
+        });
+      }
+      setupTouch() {
+        let startY = 0;
+        document.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+          const dy = e.changedTouches[0].clientY - startY;
+          if (Math.abs(dy) < 40) return;
+          this.goToSlide(this.activeIndex + (dy < 0 ? 1 : -1));
+        }, { passive: true });
+      }
+      setupWheel() {
+        document.addEventListener('wheel', (e) => {
+          if (this.wheelLocked) return;
+          if (Math.abs(e.deltaY) < 30) return;
+          this.wheelLocked = true;
+          this.goToSlide(this.activeIndex + (e.deltaY > 0 ? 1 : -1));
+          setTimeout(() => { this.wheelLocked = false; }, 700);
+        }, { passive: true });
+      }
+      goToSlide(index) {
+        const clamped = Math.max(0, Math.min(this.slides.length - 1, index));
+        this.slides[clamped].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      updateActiveDot() {
+        if (!this.navContainer) return;
+        Array.from(this.navContainer.children).forEach((btn, i) => {
+          btn.classList.toggle('active', i === this.activeIndex);
+        });
+      }
+      updateProgress() {
+        if (!this.progressFill) return;
+        const pct = (this.activeIndex / Math.max(1, this.slides.length - 1)) * 100;
+        this.progressFill.style.width = pct + '%';
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      window.presentation = new SlidePresentation();
+    });
+  </script>
+</body>
+</html>
