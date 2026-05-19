@@ -52,6 +52,23 @@ All CSS, JS, fonts (via Google Fonts CDN), and small images (base64) are inlined
 <body>
   <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
   <nav class="nav-dots" id="nav-dots" aria-label="Slide navigation"></nav>
+  <div class="blackout" id="blackout" data-mode="off" aria-hidden="true"></div>
+  <div class="help-overlay" id="help-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">
+    <div class="help-card">
+      <h2>Keyboard Shortcuts</h2>
+      <table>
+        <tr><th>Next slide</th><td>&rarr; &darr; Space PageDown</td></tr>
+        <tr><th>Previous slide</th><td>&larr; &uarr; Shift+Space PageUp</td></tr>
+        <tr><th>First / Last</th><td>Home / End</td></tr>
+        <tr><th>Jump to slide N</th><td>1 - 9 (0 = slide 10)</td></tr>
+        <tr><th>Fullscreen</th><td>F</td></tr>
+        <tr><th>Blackout / Whiteout</th><td>B / W (press again to restore)</td></tr>
+        <tr><th>Show this help</th><td>?</td></tr>
+        <tr><th>Close overlay / Exit</th><td>Esc</td></tr>
+      </table>
+      <p class="help-dismiss">Press <kbd>?</kbd> or <kbd>Esc</kbd> to close</p>
+    </div>
+  </div>
 
   <section class="slide slide-title" data-slide="1">
     <p class="eyebrow reveal" data-stagger="1">Introduction</p>
@@ -91,12 +108,15 @@ class SlidePresentation {
     this.progressFill = document.getElementById('progress-fill');
     this.navContainer = document.getElementById('nav-dots');
     this.wheelLocked = false;
+    this.blackout = document.getElementById('blackout');
+    this.helpOverlay = document.getElementById('help-overlay');
 
     this.setupNavDots();
     this.setupIntersectionObserver();
     this.setupKeyboard();
     this.setupTouch();
     this.setupWheel();
+    this.setupHelpDismissOnClick();
     this.updateProgress();
 
     // Mark the first slide visible immediately so its reveal triggers on load
@@ -134,12 +154,91 @@ class SlidePresentation {
 
   setupKeyboard() {
     document.addEventListener('keydown', (e) => {
+      // Skip when typing in editable elements (inline edit mode, input, textarea).
+      const tag = (e.target && e.target.tagName) || '';
+      if (e.target && e.target.isContentEditable) return;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      // ? -- toggle help overlay (works even with Shift+/ producing ?)
+      if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+        e.preventDefault(); this.toggleHelp(); return;
+      }
+      // Esc -- close help first, then exit blackout, then exit fullscreen.
+      if (e.key === 'Escape') {
+        if (this.helpOverlay && this.helpOverlay.classList.contains('show')) {
+          e.preventDefault(); this.toggleHelp(false); return;
+        }
+        if (this.blackout && this.blackout.dataset.mode !== 'off') {
+          e.preventDefault(); this.setBlackout('off'); return;
+        }
+        if (document.fullscreenElement) {
+          e.preventDefault(); document.exitFullscreen().catch(() => {}); return;
+        }
+        return;
+      }
+      // While help overlay is open, swallow other keys.
+      if (this.helpOverlay && this.helpOverlay.classList.contains('show')) return;
+
+      // F -- toggle fullscreen
+      if (e.key === 'f' || e.key === 'F') { e.preventDefault(); this.toggleFullscreen(); return; }
+
+      // B / W -- blackout / whiteout (press the same key again to restore)
+      if (e.key === 'b' || e.key === 'B') { e.preventDefault(); this.toggleBlackout('black'); return; }
+      if (e.key === 'w' || e.key === 'W') { e.preventDefault(); this.toggleBlackout('white'); return; }
+
+      // 1-9 jump to slide N. 0 jumps to slide 10.
+      if (/^[0-9]$/.test(e.key)) {
+        const target = e.key === '0' ? 9 : parseInt(e.key, 10) - 1;
+        if (target >= 0 && target < this.slides.length) {
+          e.preventDefault(); this.goToSlide(target);
+        }
+        return;
+      }
+
+      // Shift+Space -- previous (Keynote convention)
+      if (e.key === ' ' && e.shiftKey) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); return; }
+
       const nextKeys = ['ArrowDown', 'ArrowRight', 'PageDown', ' '];
       const prevKeys = ['ArrowUp', 'ArrowLeft', 'PageUp'];
       if (nextKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex + 1); }
       else if (prevKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); }
       else if (e.key === 'Home') { e.preventDefault(); this.goToSlide(0); }
       else if (e.key === 'End') { e.preventDefault(); this.goToSlide(this.slides.length - 1); }
+    });
+  }
+
+  toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  }
+
+  toggleBlackout(mode) {
+    if (!this.blackout) return;
+    const current = this.blackout.dataset.mode;
+    this.setBlackout(current === mode ? 'off' : mode);
+  }
+
+  setBlackout(mode) {
+    if (!this.blackout) return;
+    this.blackout.dataset.mode = mode;
+    this.blackout.setAttribute('aria-hidden', mode === 'off' ? 'true' : 'false');
+  }
+
+  toggleHelp(force) {
+    if (!this.helpOverlay) return;
+    const next = (typeof force === 'boolean') ? force : !this.helpOverlay.classList.contains('show');
+    this.helpOverlay.classList.toggle('show', next);
+    this.helpOverlay.setAttribute('aria-hidden', next ? 'false' : 'true');
+  }
+
+  setupHelpDismissOnClick() {
+    if (!this.helpOverlay) return;
+    // Click the dim backdrop (not the card) to close.
+    this.helpOverlay.addEventListener('click', (e) => {
+      if (e.target === this.helpOverlay) this.toggleHelp(false);
     });
   }
 
@@ -258,6 +357,12 @@ These rules MUST be obeyed when generating HTML. Each one comes from a known fai
 7. **Slide `data-slide` attribute** indexes from 1 (human-readable), not 0.
 
 8. **The `SlidePresentation` constructor must be called from `DOMContentLoaded`**, not at script load -- otherwise the IntersectionObserver fires before the slides are styled.
+
+9. **Blackout / help-overlay DOM elements MUST be present** as siblings of `.slide` sections, BEFORE the script runs. If they are missing the `setupKeyboard` handler short-circuits its B/W/?/Esc branches via the `if (!this.blackout) return;` guards, so the deck still navigates -- but the listed shortcuts silently do nothing. Always include both `<div id="blackout">` and `<div id="help-overlay">` in the body.
+
+10. **Keyboard handler MUST early-exit on `INPUT` / `TEXTAREA` / `SELECT` / contenteditable elements.** Without this guard, typing the letter `b` or `f` while editing a slide triggers blackout / fullscreen, breaking the inline-editing flow.
+
+11. **`Esc` priority chain is: help overlay -> blackout -> fullscreen.** The handler must check each in order and return after handling one. Otherwise pressing Esc with both blackout and help open closes the wrong layer first.
 
 ## File order in the final HTML
 

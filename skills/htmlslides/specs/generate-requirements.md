@@ -32,9 +32,11 @@ Produce the final single-file HTML deck given the Phase 1 content parameters and
         - Any preset-specific signature element CSS (e.g. `.tab-strip`, `.scanline`)
         - Animation snippets from `templates/animation-patterns.md` selected per the deck's mood
    3. `<body>`:
-      - One `<section class="slide" data-slide="N">` per slide
-      - Each slide uses one of these layout classes: `slide-title` / `slide-bullets` / `slide-two-column` / `slide-feature-grid` / `slide-quote` / `slide-code` / `slide-image`
-   4. `<script>` containing the `SlidePresentation` class from `templates/html-template.md`. If `inline_editing = true`, also include the edit-mode toggle JS.
+      - Progress bar + nav dots scaffolding (`<div class="progress">`, `<nav class="nav-dots" id="nav-dots">`).
+      - Presenter overlay DOM: `<div class="blackout" id="blackout" data-mode="off" aria-hidden="true">` AND `<div class="help-overlay" id="help-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">` with the help-card table listing all shortcuts. These two elements MUST be present even if the deck author thinks they will not be used -- the `SlidePresentation` keyboard handler short-circuits silently when they are missing, which masks broken shortcuts.
+      - One `<section class="slide" data-slide="N">` per slide.
+      - Each slide uses one of these layout classes: `slide-title` / `slide-bullets` / `slide-two-column` / `slide-feature-grid` / `slide-quote` / `slide-code` / `slide-image`.
+   4. `<script>` containing the `SlidePresentation` class from `templates/html-template.md`. The class MUST include the canonical keyboard handler (F fullscreen, 0-9 slide jump, B/W blackout/whiteout, ? help overlay, Esc priority chain, Shift+Space previous) AND its 5 supporting methods (`toggleFullscreen`, `toggleBlackout`, `setBlackout`, `toggleHelp`, `setupHelpDismissOnClick`). If `inline_editing = true`, also include the edit-mode toggle JS.
 
 3. **Density caps** (must not exceed):
 
@@ -101,3 +103,7 @@ Run these checks after writing the HTML and BEFORE moving to Phase 4 / 5:
 - [ ] Each layout class respects the density cap from rule 3.
 - [ ] If `inline_editing = true`, search for `contenteditable=` -- must be > 0. Otherwise must be 0.
 - [ ] Single-file: no external CSS / JS references except Google Fonts.
+- [ ] Presenter overlays present: `grep -c 'id="blackout"' <output.html>` == 1 AND `grep -c 'id="help-overlay"' <output.html>` == 1.
+- [ ] Canonical keyboard methods present: `grep -c 'toggleFullscreen\|toggleBlackout\|toggleHelp' <output.html>` >= 3.
+- [ ] Help overlay's table lists all 8 shortcut categories (Next / Previous / First-Last / Jump / Fullscreen / Blackout-Whiteout / Show help / Close-Exit). Verify by reading the inlined HTML.
+- [ ] Print CSS hides overlays: `grep -A1 '@media print' <output.html>` mentions `.blackout` and `.help-overlay` with `display: none`.

@@ -226,6 +226,65 @@
       .reveal, .reveal-scale, .reveal-blur { opacity: 1 !important; transform: none !important; filter: none !important; }
     }
 
+    /* ----- Blackout / Whiteout overlay (B / W keys) ----- */
+    .blackout {
+      position: fixed; inset: 0; z-index: 200;
+      background: #000; pointer-events: none;
+      opacity: 0; transition: opacity 180ms ease-out;
+    }
+    .blackout[data-mode="black"] { opacity: 1; background: #000; }
+    .blackout[data-mode="white"] { opacity: 1; background: #fff; }
+
+    /* ----- Help overlay (? key) ----- */
+    .help-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(8, 12, 24, 0.78);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: clamp(1rem, 4vw, 3rem);
+    }
+    .help-overlay.show { display: flex; }
+    .help-card {
+      background: var(--bg-elev); color: var(--fg);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3.5rem);
+      max-width: min(640px, 92vw); font-family: var(--font-body);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+    .help-card h2 {
+      margin: 0 0 clamp(1rem, 1.6vw, 1.4rem) 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      font-weight: 600; color: var(--accent);
+    }
+    .help-card table {
+      width: 100%; border-collapse: collapse;
+      font-size: clamp(0.9rem, 1.1vw, 1.05rem); line-height: 1.5;
+    }
+    .help-card th, .help-card td {
+      text-align: left; padding: 0.45em 0;
+      border-bottom: 1px solid var(--border); font-weight: 400;
+    }
+    .help-card tr:last-child th, .help-card tr:last-child td { border-bottom: none; }
+    .help-card th { color: var(--muted); width: 50%; padding-right: 1.5em; }
+    .help-card td {
+      color: var(--fg); font-family: var(--font-mono);
+      font-size: 0.95em;
+    }
+    .help-card kbd {
+      display: inline-block; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.1em 0.45em; font-size: 0.85em; font-family: inherit;
+    }
+    .help-dismiss {
+      margin: clamp(0.8rem, 1.4vw, 1.2rem) 0 0 0;
+      font-size: clamp(0.8rem, 1vw, 0.95rem);
+      color: var(--muted); text-align: center;
+    }
+    @media print {
+      .blackout, .help-overlay { display: none !important; }
+    }
+
     /* ===== Bold Signal signature elements ===== */
     .title-bar {
       width: 6px;
@@ -264,6 +323,23 @@
 <body>
   <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
   <nav class="nav-dots" id="nav-dots" aria-label="Slide navigation"></nav>
+  <div class="blackout" id="blackout" data-mode="off" aria-hidden="true"></div>
+  <div class="help-overlay" id="help-overlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" aria-hidden="true">
+    <div class="help-card">
+      <h2>Keyboard Shortcuts</h2>
+      <table>
+        <tr><th>Next slide</th><td>&rarr; &darr; Space PageDown</td></tr>
+        <tr><th>Previous slide</th><td>&larr; &uarr; Shift+Space PageUp</td></tr>
+        <tr><th>First / Last</th><td>Home / End</td></tr>
+        <tr><th>Jump to slide N</th><td>1 - 9 (0 = slide 10)</td></tr>
+        <tr><th>Fullscreen</th><td>F</td></tr>
+        <tr><th>Blackout / Whiteout</th><td>B / W (press again to restore)</td></tr>
+        <tr><th>Show this help</th><td>?</td></tr>
+        <tr><th>Close overlay / Exit</th><td>Esc</td></tr>
+      </table>
+      <p class="help-dismiss">Press <kbd>?</kbd> or <kbd>Esc</kbd> to close</p>
+    </div>
+  </div>
 
   <section class="slide slide-title" data-slide="1">
     <div class="gradient-mesh" aria-hidden="true"></div>
@@ -433,11 +509,14 @@ $ recall --visualize "everything I touched related to billing in May"</code></pr
         this.progressFill = document.getElementById('progress-fill');
         this.navContainer = document.getElementById('nav-dots');
         this.wheelLocked = false;
+        this.blackout = document.getElementById('blackout');
+        this.helpOverlay = document.getElementById('help-overlay');
         this.setupNavDots();
         this.setupIntersectionObserver();
         this.setupKeyboard();
         this.setupTouch();
         this.setupWheel();
+        this.setupHelpDismissOnClick();
         this.updateProgress();
         if (this.slides[0]) this.slides[0].classList.add('visible');
       }
@@ -470,12 +549,73 @@ $ recall --visualize "everything I touched related to billing in May"</code></pr
       }
       setupKeyboard() {
         document.addEventListener('keydown', (e) => {
+          const tag = (e.target && e.target.tagName) || '';
+          if (e.target && e.target.isContentEditable) return;
+          if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+          if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+            e.preventDefault(); this.toggleHelp(); return;
+          }
+          if (e.key === 'Escape') {
+            if (this.helpOverlay && this.helpOverlay.classList.contains('show')) {
+              e.preventDefault(); this.toggleHelp(false); return;
+            }
+            if (this.blackout && this.blackout.dataset.mode !== 'off') {
+              e.preventDefault(); this.setBlackout('off'); return;
+            }
+            if (document.fullscreenElement) {
+              e.preventDefault(); document.exitFullscreen().catch(() => {}); return;
+            }
+            return;
+          }
+          if (this.helpOverlay && this.helpOverlay.classList.contains('show')) return;
+
+          if (e.key === 'f' || e.key === 'F') { e.preventDefault(); this.toggleFullscreen(); return; }
+          if (e.key === 'b' || e.key === 'B') { e.preventDefault(); this.toggleBlackout('black'); return; }
+          if (e.key === 'w' || e.key === 'W') { e.preventDefault(); this.toggleBlackout('white'); return; }
+
+          if (/^[0-9]$/.test(e.key)) {
+            const target = e.key === '0' ? 9 : parseInt(e.key, 10) - 1;
+            if (target >= 0 && target < this.slides.length) {
+              e.preventDefault(); this.goToSlide(target);
+            }
+            return;
+          }
+
+          if (e.key === ' ' && e.shiftKey) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); return; }
+
           const nextKeys = ['ArrowDown', 'ArrowRight', 'PageDown', ' '];
           const prevKeys = ['ArrowUp', 'ArrowLeft', 'PageUp'];
           if (nextKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex + 1); }
           else if (prevKeys.includes(e.key)) { e.preventDefault(); this.goToSlide(this.activeIndex - 1); }
           else if (e.key === 'Home') { e.preventDefault(); this.goToSlide(0); }
           else if (e.key === 'End') { e.preventDefault(); this.goToSlide(this.slides.length - 1); }
+        });
+      }
+      toggleFullscreen() {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else document.documentElement.requestFullscreen().catch(() => {});
+      }
+      toggleBlackout(mode) {
+        if (!this.blackout) return;
+        const current = this.blackout.dataset.mode;
+        this.setBlackout(current === mode ? 'off' : mode);
+      }
+      setBlackout(mode) {
+        if (!this.blackout) return;
+        this.blackout.dataset.mode = mode;
+        this.blackout.setAttribute('aria-hidden', mode === 'off' ? 'true' : 'false');
+      }
+      toggleHelp(force) {
+        if (!this.helpOverlay) return;
+        const next = (typeof force === 'boolean') ? force : !this.helpOverlay.classList.contains('show');
+        this.helpOverlay.classList.toggle('show', next);
+        this.helpOverlay.setAttribute('aria-hidden', next ? 'false' : 'true');
+      }
+      setupHelpDismissOnClick() {
+        if (!this.helpOverlay) return;
+        this.helpOverlay.addEventListener('click', (e) => {
+          if (e.target === this.helpOverlay) this.toggleHelp(false);
         });
       }
       setupTouch() {

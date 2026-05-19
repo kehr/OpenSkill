@@ -75,14 +75,33 @@ Not supported: IE11 (won't render correctly), pre-2022 mobile browsers may have 
 
 ## Keyboard shortcuts (in the rendered deck)
 
+Navigation:
+
 | Key | Action |
 |---|---|
 | ArrowDown / ArrowRight / Space / PageDown | Next slide |
-| ArrowUp / ArrowLeft / PageUp | Previous slide |
+| ArrowUp / ArrowLeft / Shift+Space / PageUp | Previous slide |
 | Home | First slide |
 | End | Last slide |
+| 1 - 9 | Jump to slide 1-9 |
+| 0 | Jump to slide 10 |
+
+Presenter controls:
+
+| Key | Action |
+|---|---|
+| F | Toggle fullscreen |
+| B | Blackout (press B again to restore) |
+| W | Whiteout (press W again to restore) |
+| ? | Show keyboard shortcut overlay |
+| Esc | Close overlay -> exit blackout -> exit fullscreen (in that priority order) |
 
 Also supported: mouse wheel (debounced), touch swipe, click on nav dots on the right edge.
+
+Notes:
+- Keys are ignored while editing in an inline-editable field (`<input>`, `<textarea>`, or `contenteditable` elements). You can safely type letters like B, F, W in the deck's editable text without triggering presenter controls.
+- The `?` shortcut overlay can also be dismissed by clicking the dim backdrop outside the help card.
+- The `B` / `W` blackout covers the deck without changing the current slide, so you can resume from the same place after answering a question.
 
 ## PDF Export Troubleshooting
 
