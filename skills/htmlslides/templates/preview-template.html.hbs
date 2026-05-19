@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- Preview: {{preset_name}} -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preview: {{preset_name}} -- {{deck_title}}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  {{{font_link_tag}}}
+
+  <style>
+    /* ===== Preset: {{preset_name}} ===== */
+    {{{preset_root_block}}}
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      min-height: 100vh;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      padding: clamp(2rem, 5vw, 6rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+      color: var(--muted);
+      margin-bottom: 1em;
+      font-weight: 500;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(1.1rem, 2vw, 1.75rem);
+      margin-top: 0.6em;
+      max-width: 36em;
+    }
+
+    .preset-badge {
+      position: fixed;
+      bottom: clamp(1rem, 2vw, 2rem);
+      right: clamp(1rem, 2vw, 2rem);
+      font-family: var(--font-body);
+      font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+      color: var(--muted);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.4em 1em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ===== Preset signature elements ===== */
+    {{{signature_css}}}
+  </style>
+</head>
+<body>
+  <section class="slide slide-title">
+    {{{signature_html_prefix}}}
+    <p class="eyebrow">Preview {{preview_letter}}</p>
+    <h1>{{deck_title}}</h1>
+    <p class="subtitle">{{deck_subtitle}}</p>
+    {{{signature_html_suffix}}}
+  </section>
+  <div class="preset-badge">{{preset_name}}</div>
+</body>
+</html>
