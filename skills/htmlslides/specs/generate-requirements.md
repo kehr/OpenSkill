@@ -107,3 +107,4 @@ Run these checks after writing the HTML and BEFORE moving to Phase 4 / 5:
 - [ ] Canonical keyboard methods present: `grep -c 'toggleFullscreen\|toggleBlackout\|toggleHelp' <output.html>` >= 3.
 - [ ] Help overlay's table lists all 8 shortcut categories (Next / Previous / First-Last / Jump / Fullscreen / Blackout-Whiteout / Show help / Close-Exit). Verify by reading the inlined HTML.
 - [ ] Print CSS hides overlays: `grep -A1 '@media print' <output.html>` mentions `.blackout` and `.help-overlay` with `display: none`.
+- [ ] `@page` size declaration present: `grep -c '@page' <output.html>` >= 1. Without this, Cmd+P / Chrome --print-to-pdf falls back to Letter portrait and crops 16:9 content. The declaration ships inside `viewport-base.css` (which must be inlined verbatim); a missing match indicates the print block was stripped or modified.

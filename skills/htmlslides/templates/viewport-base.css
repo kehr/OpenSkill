@@ -380,22 +380,37 @@ p  { font-size: clamp(1rem, 1.5vw, 1.5rem); margin: 0.5em 0; }
   .slide-feature-grid .grid { grid-template-columns: 1fr; }
 }
 
-/* ----- Print (Cmd+P fallback) ----- */
+/* ----- Print (Cmd+P fallback & Chrome --print-to-pdf) ----- */
+/* CRITICAL: @page declares paper size; .slide declares content size.
+   Both are required — without @page, Chrome falls back to Letter portrait
+   (8.5x11"), and 16:9 content gets cropped. See bug log 2026-05-19. */
+
+@page {
+  size: 1920px 1080px;
+  margin: 0;
+}
 
 @media print {
-  html { scroll-snap-type: none; overflow: visible; }
+  html { scroll-snap-type: none; overflow: visible; font-size: 18px; }
+  body { background: var(--bg); }
   .slide {
     width: 1920px;
     height: 1080px;
+    min-height: 1080px;
+    max-height: 1080px;
     page-break-after: always;
     page-break-inside: avoid;
+    break-after: page;
+    break-inside: avoid;
+    overflow: hidden;
   }
-  .slide:last-child { page-break-after: auto; }
-  .progress, .nav-dots, .blackout, .help-overlay { display: none !important; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  .progress, .nav-dots, .blackout, .help-overlay, .edit-toggle { display: none !important; }
   /* Force reveal final state for print */
   .reveal, .reveal-scale, .reveal-left, .reveal-blur {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
+    transition: none !important;
   }
 }

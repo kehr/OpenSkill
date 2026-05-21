@@ -2,11 +2,17 @@
 // Core PDF export worker. Invoked by export-pdf.sh after Chrome is located and
 // puppeteer-core is installed in an isolated tmp dir.
 //
-// Strategy: per-slide screenshot, then stitch into a single PDF via a second
-// inline HTML page that uses @page CSS for fixed page size. Animation-aware:
-// before each screenshot we force every .reveal* element on the active slide
-// to its final state (opacity:1, transform:none, filter:none) so paused CSS
-// transitions are captured visible, not blank.
+// Strategy (rev 2, 2026-05-19):
+// Use Chrome's native print engine via page.pdf() with print emulation.
+// The deck's @media print block + @page size declaration in viewport-base.css
+// drive pagination natively — no manual screenshot loop, no scroll, no clip.
+//
+// Why this changed: the previous "scroll → screenshot → stitch" strategy
+// collided with `scroll-snap-type: y mandatory` in viewport-base.css. The snap
+// would yank every scrollIntoView() back to slide 1, producing 22 identical
+// pages of the cover. Going through @media print sidesteps scroll-snap
+// entirely (print layout discards scroll containers) and yields a vector PDF
+// roughly 10× smaller than the screenshot-stitched bitmap version.
 
 import http from 'node:http';
 import { promises as fs } from 'node:fs';
@@ -135,67 +141,41 @@ function startServer(rootDir) {
     }
     log(`${slideCount} slides detected`);
 
-    // Inject helpers once. force-final + activate one slide at a time.
+    // Force-finalize all reveal animations across every slide so the printed
+    // PDF doesn't capture mid-transition blank elements. (The deck's print
+    // CSS already sets opacity:1 etc., but inline styles defeat any race
+    // condition with the IntersectionObserver still in flight.)
     await page.evaluate(() => {
-      window.__exportForceFinal = (i) => {
-        const slides = document.querySelectorAll('.slide');
-        slides.forEach((s, idx) => {
-          s.style.opacity = '';
-          s.style.visibility = '';
-          s.style.display = '';
-          s.classList.toggle('active', idx === i);
-          s.classList.toggle('visible', idx === i);
-        });
-        if (window.presentation && typeof window.presentation.goToSlide === 'function') {
-          try { window.presentation.goToSlide(i); } catch {}
-        }
-        slides[i].scrollIntoView({ behavior: 'instant', block: 'start' });
-        // Force every reveal class on the active slide to final state.
-        slides[i].querySelectorAll('.reveal, .reveal-scale, .reveal-left, .reveal-blur').forEach((el) => {
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-          el.style.filter = 'none';
-          el.style.visibility = 'visible';
-        });
-      };
+      document.querySelectorAll('.slide').forEach((s) => s.classList.add('visible'));
+      document.querySelectorAll('.reveal, .reveal-scale, .reveal-left, .reveal-blur').forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        el.style.filter = 'none';
+        el.style.transition = 'none';
+      });
     });
 
-    // Capture each slide to PNG
-    const pngs = [];
-    for (let i = 0; i < slideCount; i++) {
-      await page.evaluate((idx) => window.__exportForceFinal(idx), i);
-      await new Promise((r) => setTimeout(r, 250));
-      const buf = await page.screenshot({
-        type: 'png',
-        clip: { x: 0, y: 0, width: WIDTH, height: HEIGHT },
-      });
-      pngs.push(buf);
-      log(`slide ${String(i + 1).padStart(2, '0')}/${slideCount} captured (${buf.length} bytes)`);
-    }
+    // Switch to print media so the deck's @media print + @page rules apply.
+    // This is the key fix: deck CSS declares `@page { size: 1920px 1080px }`
+    // and `.slide { page-break-after: always }`, so Chrome's print pipeline
+    // paginates correctly with one .slide per page, in landscape.
+    await page.emulateMediaType('print');
 
-    // Stitch via second page with @page CSS
-    const wrapper = `<!doctype html><html><head><meta charset="utf-8"><style>
-      @page { size: ${WIDTH}px ${HEIGHT}px; margin: 0; }
-      html, body { margin: 0; padding: 0; background: #000; }
-      .page { width: ${WIDTH}px; height: ${HEIGHT}px; overflow: hidden; page-break-after: always; }
-      .page:last-child { page-break-after: auto; }
-      .page img { width: 100%; height: 100%; display: block; }
-    </style></head><body>
-      ${pngs.map((b) => `<div class="page"><img src="data:image/png;base64,${b.toString('base64')}"></div>`).join('\n')}
-    </body></html>`;
+    // Brief settle so layout reflows under print media before pdf() snapshots.
+    await new Promise((r) => setTimeout(r, 400));
 
-    const pdfPage = await browser.newPage();
-    await pdfPage.setContent(wrapper, { waitUntil: 'load' });
-    await pdfPage.pdf({
+    await page.pdf({
       path: outputAbs,
       printBackground: true,
-      preferCSSPageSize: true,
+      preferCSSPageSize: true,   // honor the deck's @page size declaration
       width: `${WIDTH}px`,
       height: `${HEIGHT}px`,
       margin: { top: 0, right: 0, bottom: 0, left: 0 },
+      pageRanges: '',            // all pages
     });
 
     log(`PDF written to ${outputAbs}`);
+    log(`${slideCount} slides rendered via native print pipeline`);
   } finally {
     if (browser) await browser.close().catch(() => {});
     await new Promise((r) => server.close(r));
