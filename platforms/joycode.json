@@ -1,7 +1,0 @@
-{
-  "name": "joycode",
-  "configDir": ".joycode",
-  "skillsDir": "skills",
-  "agentsDir": "agents",
-  "homeBase": "~"
-}
