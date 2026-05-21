@@ -1,9 +1,0 @@
-{
-  "name": "blogpost-style",
-  "version": "0.1.0",
-  "description": "Optimize Markdown blog posts to engineering-blog voice (Anthropic / OpenAI Research)",
-  "type": "skill",
-  "platforms": ["claude", "joycode"],
-  "render": ["SKILL.md", "specs/*.md"],
-  "agents": []
-}

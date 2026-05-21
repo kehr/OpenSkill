@@ -1,9 +1,0 @@
-{
-  "name": "worksummary",
-  "version": "1.0.0",
-  "description": "Work Summary automation for managers",
-  "type": "skill",
-  "platforms": ["claude", "joycode"],
-  "render": ["SKILL.md", "specs/*.md"],
-  "agents": []
-}
