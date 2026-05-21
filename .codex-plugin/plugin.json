@@ -1,0 +1,42 @@
+{
+  "name": "openskill",
+  "version": "1.0.0",
+  "description": "Agentic skills library: blog post styling, HTML deck generation, work summary automation",
+  "author": {
+    "name": "kehr",
+    "email": "zhwangkaixuan@gmail.com",
+    "url": "https://github.com/kehr"
+  },
+  "homepage": "https://github.com/kehr/OpenSkill",
+  "repository": "https://github.com/kehr/OpenSkill",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "blogpost",
+    "presentation",
+    "weekly",
+    "automation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "OpenSkill",
+    "shortDescription": "Blog post styling, HTML deck generation, work summary automation",
+    "longDescription": "OpenSkill bundles three production skills (blogpost-style, htmlslides, worksummary) plus a bootstrap skill (using-openskill) that engages the skill system at conversation start.",
+    "developerName": "kehr",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Help me write a blog post in engineering-blog voice.",
+      "Generate an HTML presentation deck from this outline."
+    ],
+    "websiteURL": "https://github.com/kehr/OpenSkill",
+    "brandColor": "#3B82F6",
+    "composerIcon": "./assets/openskill-small.svg",
+    "logo": "./assets/app-icon.png",
+    "screenshots": []
+  }
+}

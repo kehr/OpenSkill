@@ -1,0 +1,6 @@
+{
+  "name": "openskill",
+  "description": "Agentic skills library for Gemini CLI: blog post styling, HTML deck generation, work summary automation",
+  "version": "1.0.0",
+  "contextFileName": "GEMINI.md"
+}

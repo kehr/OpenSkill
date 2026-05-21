@@ -1,0 +1,20 @@
+{
+  "name": "openskill-dev",
+  "description": "Development marketplace for the OpenSkill skills library",
+  "owner": {
+    "name": "kehr",
+    "email": "zhwangkaixuan@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "openskill",
+      "description": "Agentic skills library for Claude Code: blog post styling, HTML deck generation, work summary automation",
+      "version": "1.0.0",
+      "source": "./",
+      "author": {
+        "name": "kehr",
+        "email": "zhwangkaixuan@gmail.com"
+      }
+    }
+  ]
+}
