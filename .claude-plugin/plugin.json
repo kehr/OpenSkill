@@ -15,5 +15,6 @@
     "presentation",
     "weekly",
     "automation"
-  ]
+  ],
+  "hooks": "./hooks/hooks.json"
 }
