@@ -30,8 +30,7 @@ SKILL.md is the orchestration entry point. It defines WHAT to do and WHERE to fi
 
 ```
 skill-name/
-  SKILL.md              # Orchestration + file index (concise)
-  skill.json            # Build metadata
+  SKILL.md              # Skill instructions + frontmatter metadata (name, description, allowed-tools)
   config/               # Built-in default configuration
   scripts/              # Reusable script tools
   specs/                # S - Execution standards (with Verification Checklists)
